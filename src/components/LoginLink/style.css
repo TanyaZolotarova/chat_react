@@ -1,0 +1,11 @@
+.link_login {
+    display: block;
+    text-decoration: none;
+    color: #79787e;
+    font-size: 14px;
+}
+
+.link_login:hover {
+    color: #2a2931;
+}
+
