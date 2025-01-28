@@ -6,7 +6,7 @@ interface LinkProps {
     to: string;
 }
 
-export const LoginLink: React.FC<LinkProps> = ({text, to}) => {
+export const LinkBtn: React.FC<LinkProps> = ({text, to}) => {
     return (
         <Link to={to} className='link_login'>{text}</Link>
     )

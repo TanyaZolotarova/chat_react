@@ -1,5 +1,3 @@
-import './style.css'
-
 interface ImgProps {
     src: string;
     alt: string;
@@ -7,6 +5,6 @@ interface ImgProps {
 
 export const Img: React.FC<ImgProps> = ({src, alt}) => {
     return (
-        <img src={src} alt={alt} className='img_size'/>
+        <img src={src} alt={alt}/>
     )
 }
