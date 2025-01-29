@@ -1,10 +1,8 @@
-import {Routers} from '../routers';
+import {Routers} from './Routes.tsx';
 import './style.css'
 
-const Index = () => {
+export const App = () => {
     return (
         <Routers/>
     )
 }
-
-export default Index

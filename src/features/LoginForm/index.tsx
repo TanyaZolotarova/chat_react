@@ -1,8 +1,6 @@
 import {TitleText} from '../../components/TitleText';
 import {TextInput} from '../../components/TextInput';
-import {Btn} from '../../components/Button';
-import {Box} from '@mui/material';
-import {LinkBtn} from '../../components/LinkBtn';
+import {SubmitBtn} from '../../components/SubmitButton';
 
 export const LoginForm = () => {
     return (
@@ -24,11 +22,7 @@ export const LoginForm = () => {
                 type={'password'}
                 autoComplete={'current-password'}
             />
-            <Btn text={'Sign in'}/>
-            <Box sx={{m: 1}}>
-                <LinkBtn text={'Forgot your password?'} to={'/'}/>
-                <LinkBtn text={'Sign Up'} to={'/register'}/>
-            </Box>
+            <SubmitBtn text={'Sign in'}/>
         </form>
     )
 }

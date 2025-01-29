@@ -1,7 +1,7 @@
+import {Checkbox, FormControlLabel, FormGroup} from '@mui/material';
 import {TitleText} from '../../components/TitleText';
 import {TextInput} from '../../components/TextInput';
-import {Checkbox, FormControlLabel, FormGroup} from '@mui/material';
-import {Btn} from '../../components/Button';
+import {SubmitBtn} from '../../components/SubmitButton';
 
 export const RegistrationForm = () => {
     return (
@@ -30,10 +30,13 @@ export const RegistrationForm = () => {
                 autoComplete={'current-password'}
             />
             <FormGroup>
-                <FormControlLabel required control={<Checkbox color='success'/>}
-                                  label='I agree to the terms and conditions'/>
+                <FormControlLabel
+                    required
+                    control={<Checkbox color='success'/>}
+                    label='I agree to the terms and conditions'
+                />
             </FormGroup>
-            <Btn text={'Sign up'}/>
+            <SubmitBtn text={'Sign up'}/>
         </form>
     )
 }

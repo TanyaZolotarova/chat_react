@@ -1,8 +1,9 @@
 import {Box, Container} from '@mui/material';
+import {GoogleAuth} from '../../features/GoogleAuth';
+import {RegistrationForm} from '../../features/RegistrationForm';
 import {TitleText} from '../../components/TitleText';
 import {LinkBtn} from '../../components/LinkBtn';
-import {RegistrationForm} from '../../features/RegistrationForm';
-import {GoogleAuth} from '../../features/GoogleAuth';
+
 
 export const Register = () => {
     return (

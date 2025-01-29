@@ -1,7 +1,8 @@
-import {Container} from '@mui/material';
-import {TitleText} from '../../components/TitleText';
+import {Box, Container} from '@mui/material';
 import {LoginForm} from '../../features/LoginForm';
 import {GoogleAuth} from '../../features/GoogleAuth';
+import {TitleText} from '../../components/TitleText';
+import {LinkBtn} from '../../components/LinkBtn';
 
 export const Login = () => {
 
@@ -15,6 +16,10 @@ export const Login = () => {
             textAlign: 'center',
         }}>
             <LoginForm/>
+            <Box sx={{m: 1}}>
+                <LinkBtn text={'Forgot your password?'} to={'/'}/>
+                <LinkBtn text={'Sign Up'} to={'/register'}/>
+            </Box>
             <TitleText title={'Or sign in with'} variant={'subtitle1'} component={'p'}/>
             <GoogleAuth/>
         </Container>
