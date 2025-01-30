@@ -3,8 +3,11 @@ interface ImgProps {
     alt: string;
 }
 
-export const Img: React.FC<ImgProps> = ({src, alt}) => {
+export const Img: React.FC<ImgProps> = ({ src, alt }) => {
     return (
-        <img src={src} alt={alt}/>
+        <img
+            src={ src }
+            alt={ alt }
+        />
     )
 }

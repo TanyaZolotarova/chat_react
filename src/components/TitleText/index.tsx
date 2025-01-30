@@ -1,12 +1,18 @@
-import {Typography, TypographyProps} from '@mui/material';
+import { Typography, TypographyProps } from '@mui/material';
 
 interface TitleTextProps extends TypographyProps {
     title: string;
     component: React.ElementType;
 }
 
-export const TitleText: React.FC<TitleTextProps> = ({title, component, variant}) => {
+export const TitleText: React.FC<TitleTextProps> = ({ title, component, variant }) => {
     return (
-        <Typography variant={variant} component={component} sx={{p: 0.5}}>{title}</Typography>
+        <Typography
+            variant={ variant }
+            component={ component }
+            sx={{ p: 0.5 }}
+        >
+            { title }
+        </Typography>
     )
 }
