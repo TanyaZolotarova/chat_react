@@ -8,10 +8,7 @@ interface LinkProps {
 
 export const LinkBtn: React.FC<LinkProps> = ({ text, to }) => {
     return (
-        <Link
-            to={ to }
-            className='link_login'
-        >
+        <Link to={ to } className='link_login'>
             { text }
         </Link>
     )

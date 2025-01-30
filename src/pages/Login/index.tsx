@@ -20,22 +20,14 @@ export const Login = () => {
             }}
         >
             <LoginForm/>
-            <Box
-                sx={{ m: 1 }}
-            >
-                <LinkBtn
-                    text={ 'Forgot your password?' }
-                    to={ '/' }
-                />
-                <LinkBtn
-                    text={ 'Sign Up' }
-                    to={ '/register' }
-                />
+            <Box sx={{ m: 1 }}>
+                <LinkBtn text='Forgot your password?' to='/'/>
+                <LinkBtn text='Sign Up' to='/register'/>
             </Box>
             <TitleText
-                title={ 'Or sign in with' }
-                variant={ 'subtitle1' }
-                component={ 'p' }
+                title='Or sign in with'
+                variant='subtitle1'
+                component='p'
             />
             <GoogleAuth/>
         </Container>

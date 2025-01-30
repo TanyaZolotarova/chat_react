@@ -21,18 +21,13 @@ export const Register = () => {
         >
             <RegistrationForm/>
             <TitleText
-                title={ 'Or sign up with' }
-                variant={ 'subtitle1' }
-                component={ 'p' }
+                title='Or sign up with'
+                variant='subtitle1'
+                component='p'
             />
             <GoogleAuth/>
-            <Box
-                sx={{ m: 1 }}
-            >
-                <LinkBtn
-                    text= 'Already have an account? Sign in'
-                    to={ '/' }
-                />
+            <Box sx={{ m: 1 }}>
+                <LinkBtn text= 'Already have an account? Sign in' to='/'/>
             </Box>
         </Container>
     )

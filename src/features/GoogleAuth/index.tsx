@@ -11,14 +11,8 @@ export const GoogleAuth = () => {
                 mt: 1,
             }}
         >
-            <Link
-                href='https://accounts.google.com'
-                target='_blank'
-            >
-                <Img
-                    src={ '/assets/img/google.png' }
-                    alt={ 'google logo' }
-                />
+            <Link href='https://accounts.google.com' target='_blank'>
+                <Img src='/assets/img/google.png' alt='google logo'/>
             </Link>
         </Box>
     )
