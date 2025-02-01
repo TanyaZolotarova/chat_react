@@ -9,5 +9,5 @@ export const TextInput: React.FC<TextFieldProps> = ( props) => {
             fullWidth
             required
         />
-    )
+    );
 }

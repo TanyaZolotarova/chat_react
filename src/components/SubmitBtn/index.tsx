@@ -12,7 +12,7 @@ export const SubmitBtn: React.FC<BtnProps> = ({ text }) => {
             sx={{ background: '#2a2931', m: 1, px: 6 }}
             size='large'
         >
-            { text }
+            {text}
         </Button>
-    )
+    );
 }

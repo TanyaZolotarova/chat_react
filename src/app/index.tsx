@@ -4,5 +4,5 @@ import './style.css'
 export const App = () => {
     return (
         <AppRoutes/>
-    )
+    );
 }

@@ -11,12 +11,12 @@ export const Register = () => {
             component='main'
             maxWidth='xs'
             sx={{
-            mt: 4,
-            p: 4,
-            border: '1px solid #ccc',
-            borderRadius: '12px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
+                mt: 4,
+                p: 4,
+                border: '1px solid #ccc',
+                borderRadius: '12px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                textAlign: 'center',
             }}
         >
             <RegistrationForm/>
@@ -27,8 +27,8 @@ export const Register = () => {
             />
             <GoogleAuth/>
             <Box sx={{ m: 1 }}>
-                <LinkBtn text= 'Already have an account? Sign in' to='/'/>
+                <LinkBtn text='Already have an account? Sign in' to='/' />
             </Box>
         </Container>
-    )
+    );
 }

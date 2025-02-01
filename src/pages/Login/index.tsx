@@ -11,18 +11,18 @@ export const Login = () => {
             component='main'
             maxWidth='xs'
             sx={{
-            mt: 4,
-            p: 4,
-            border: '1px solid #ccc',
-            borderRadius: '12px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-            textAlign: 'center',
+                mt: 4,
+                p: 4,
+                border: '1px solid #ccc',
+                borderRadius: '12px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                textAlign: 'center',
             }}
         >
             <LoginForm/>
             <Box sx={{ m: 1 }}>
-                <LinkBtn text='Forgot your password?' to='/'/>
-                <LinkBtn text='Sign Up' to='/register'/>
+                <LinkBtn text='Forgot your password?' to='/' />
+                <LinkBtn text='Sign Up' to='/register' />
             </Box>
             <TitleText
                 title='Or sign in with'
@@ -31,5 +31,5 @@ export const Login = () => {
             />
             <GoogleAuth/>
         </Container>
-    )
+    );
 }

@@ -32,5 +32,5 @@ export const LoginForm = () => {
             />
             <SubmitBtn text='Sign in'/>
         </form>
-    )
+    );
 }

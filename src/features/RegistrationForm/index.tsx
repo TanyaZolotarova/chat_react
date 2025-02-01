@@ -39,12 +39,12 @@ export const RegistrationForm = () => {
             />
             <FormGroup>
                 <FormControlLabel
-                    control={ <Checkbox color='success'/> }
+                    control={<Checkbox color='success'/>}
                     label='I agree to the terms and conditions'
                     required
                 />
             </FormGroup>
             <SubmitBtn text='Sign up'/>
         </form>
-    )
+    );
 }

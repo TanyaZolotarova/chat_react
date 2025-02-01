@@ -15,5 +15,5 @@ export const GoogleAuth = () => {
                 <Img src='/assets/img/google.png' alt='google logo'/>
             </Link>
         </Box>
-    )
+    );
 }
