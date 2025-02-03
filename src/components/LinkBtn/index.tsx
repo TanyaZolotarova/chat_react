@@ -8,7 +8,7 @@ interface LinkProps {
 
 export const LinkBtn: React.FC<LinkProps> = ({ text, to }) => {
     return (
-        <Link to={to} className='link_btn' >
+        <Link to={to} className='link_btn'>
             {text}
         </Link>
     );
