@@ -1,0 +1,10 @@
+.link_btn {
+    display: block;
+    text-decoration: none;
+    color: #79787e;
+    font-size: 14px;
+}
+
+.link_btn:hover {
+    color: #2a2931;
+}
