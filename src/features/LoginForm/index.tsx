@@ -30,7 +30,7 @@ export const LoginForm = () => {
                 type='password'
                 autoComplete='current-password'
             />
-            <SubmitBtn text='Sign in'/>
+            <SubmitBtn text='Sign in' />
         </form>
     );
 }

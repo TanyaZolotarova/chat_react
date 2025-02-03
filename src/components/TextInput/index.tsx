@@ -1,6 +1,6 @@
 import { TextField, TextFieldProps } from '@mui/material';
 
-export const TextInput: React.FC<TextFieldProps> = ( props) => {
+export const TextInput: React.FC<TextFieldProps> = (props) => {
 
     return (
         <TextField

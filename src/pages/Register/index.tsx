@@ -26,7 +26,7 @@ export const Register = () => {
                 component='p'
             />
             <GoogleAuth/>
-            <Box sx={{ m: 1 }}>
+            <Box sx={{ m: 1 }} >
                 <LinkBtn text='Already have an account? Sign in' to='/' />
             </Box>
         </Container>

@@ -4,10 +4,5 @@ interface ImgProps {
 }
 
 export const Img: React.FC<ImgProps> = ({ src, alt }) => {
-    return (
-        <img
-            src={src}
-            alt={alt}
-        />
-    );
+    return <img src={src} alt={alt} />
 }
