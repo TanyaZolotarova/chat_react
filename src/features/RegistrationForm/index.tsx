@@ -1,11 +1,49 @@
-import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useEffect } from 'react';
+import {Checkbox, FormControlLabel, FormGroup, FormHelperText} from '@mui/material';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
 
+
+const schema = z.object({
+    name: z.string().nonempty('Name is required').min(2, 'Name must be at least 2 characters'),
+    email: z.string().nonempty('Email is required').email('Invalid email address'),
+    password: z.string().nonempty('Password is required').min(6, 'Password must be at least 6 characters'),
+    terms: z.boolean().refine(value => value === true, {
+        message: 'You must accept the terms and conditions'
+    })
+});
+
 export const RegistrationForm = () => {
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isValid },
+        setFocus,
+        setValue,
+        watch
+    } = useForm<z.infer<typeof schema>>({
+        resolver: zodResolver(schema),
+        mode: 'onChange'
+    });
+
+    const termsValue = watch('terms', false);
+
+    useEffect(() => {
+        const errorField = Object.keys(errors)[0] as keyof z.infer<typeof schema> | undefined;
+        if (errorField) setFocus(errorField);
+    }, [errors, setFocus]);
+
+    const onSubmit = (data: z.infer<typeof schema>) => {
+        console.log('Form Data:', data);
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TitleText
                 title='Signing Up'
                 variant='h4'
@@ -19,32 +57,44 @@ export const RegistrationForm = () => {
             <TextInput
                 id='name'
                 label='Your Name:'
-                name='name'
                 autoComplete='name'
                 autoFocus
+                {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message || ''}
             />
             <TextInput
                 id='email'
                 label='Your E-mail:'
-                name='email'
                 type='email'
                 autoComplete='email'
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message || ''}
             />
             <TextInput
                 id='password'
                 label='Password:'
-                name='password'
                 type='password'
                 autoComplete='current-password'
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message || ''}
             />
             <FormGroup>
                 <FormControlLabel
-                    control={<Checkbox color='success' />}
+                    control={
+                        <Checkbox
+                            checked={termsValue}
+                            onChange={(e) => setValue('terms', e.target.checked, { shouldValidate: true })}
+                            color='success'
+                        />
+                    }
                     label='I agree to the terms and conditions'
-                    required
                 />
+                {errors.terms && (<FormHelperText error>{errors.terms.message}</FormHelperText>)}
             </FormGroup>
-            <SubmitBtn text='Sign up' />
+            <SubmitBtn text='Sign up' disabled={!isValid}/>
         </form>
     );
 }
