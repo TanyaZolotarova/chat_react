@@ -17,10 +17,9 @@ const schema = z.object({
     })
 });
 
-type formData = z.infer<typeof schema>;
+type FormData = z.infer<typeof schema>;
 
 export const RegistrationForm = () => {
-
     const {
         register,
         handleSubmit,
@@ -29,7 +28,7 @@ export const RegistrationForm = () => {
         setValue,
         watch,
         reset
-    } = useForm<formData>({
+    } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
     });
@@ -38,12 +37,12 @@ export const RegistrationForm = () => {
 
     useEffect(() => {
         if (!isValid) {
-            const firstErrorField = Object.keys(errors)[0] as keyof formData;
+            const firstErrorField = Object.keys(errors)[0] as keyof FormData;
             setFocus(firstErrorField);
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = (data: formData) => {
+    const onSubmit = (data: FormData) => {
         console.log('Form Data:', data);
         reset();
     };
