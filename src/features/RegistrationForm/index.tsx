@@ -1,8 +1,8 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useEffect } from 'react';
-import {Checkbox, FormControlLabel, FormGroup, FormHelperText} from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/material';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
@@ -17,6 +17,8 @@ const schema = z.object({
     })
 });
 
+type formData = z.infer<typeof schema>;
+
 export const RegistrationForm = () => {
 
     const {
@@ -26,7 +28,7 @@ export const RegistrationForm = () => {
         setFocus,
         setValue,
         watch
-    } = useForm<z.infer<typeof schema>>({
+    } = useForm<formData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
     });
@@ -34,11 +36,13 @@ export const RegistrationForm = () => {
     const termsValue = watch('terms', false);
 
     useEffect(() => {
-        const errorField = Object.keys(errors)[0] as keyof z.infer<typeof schema> | undefined;
-        if (errorField) setFocus(errorField);
-    }, [errors, setFocus]);
+        if (!isValid) {
+            const firstErrorField = Object.keys(errors)[0] as keyof formData;
+            setFocus(firstErrorField);
+        }
+    }, [isValid, errors, setFocus]);
 
-    const onSubmit = (data: z.infer<typeof schema>) => {
+    const onSubmit = (data: formData) => {
         console.log('Form Data:', data);
     };
 
