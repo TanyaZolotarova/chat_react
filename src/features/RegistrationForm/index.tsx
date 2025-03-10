@@ -27,7 +27,8 @@ export const RegistrationForm = () => {
         formState: { errors, isValid },
         setFocus,
         setValue,
-        watch
+        watch,
+        reset
     } = useForm<formData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
@@ -44,6 +45,7 @@ export const RegistrationForm = () => {
 
     const onSubmit = (data: formData) => {
         console.log('Form Data:', data);
+        reset();
     };
 
     return (
