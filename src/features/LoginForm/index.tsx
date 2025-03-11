@@ -1,10 +1,44 @@
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
 
+
+const schema = z.object({
+    email: z.string().nonempty('Email is required').email('Invalid email address'),
+    password: z.string().nonempty('Password is required').min(6, 'Password must be at least 6 characters'),
+});
+
+type FormData = z.infer<typeof schema>;
+
 export const LoginForm = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isValid },
+        setFocus,
+        reset
+    } = useForm<FormData>({
+        resolver: zodResolver(schema),
+        mode: 'onChange'
+    });
+
+    useEffect(() => {
+        if (!isValid) {
+            const firstErrorField = Object.keys(errors)[0] as keyof FormData;
+            setFocus(firstErrorField);
+        }
+    }, [isValid, errors, setFocus]);
+
+    const onSubmit = (data: FormData) => {
+        console.log('Form Data:', data);
+        reset();
+    }
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TitleText
                 title='Signing In'
                 variant='h4'
@@ -18,19 +52,23 @@ export const LoginForm = () => {
             <TextInput
                 id='email'
                 label='Your E-mail:'
-                name='email'
                 type='email'
                 autoComplete='email'
                 autoFocus
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message || ''}
             />
             <TextInput
                 id='password'
                 label='Password:'
-                name='password'
                 type='password'
                 autoComplete='current-password'
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message || ''}
             />
-            <SubmitBtn text='Sign in' />
+            <SubmitBtn text='Sign in' disabled={!isValid}/>
         </form>
     );
 }
