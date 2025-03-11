@@ -1,10 +1,11 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import {useEffect} from "react";
+
 
 const schema = z.object({
     email: z.string().nonempty('Email is required').email('Invalid email address'),
