@@ -6,31 +6,22 @@ import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/mate
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { hashPassword } from '../../entities/utils.ts';
-import { registerUser } from '../../services/apiAuth.ts'
+import { hashString } from '../../components/Utils';
+import { registerUser } from '../../components/AuthApi'
 
 
 const schema = z.object({
     name: z.string()
         .nonempty('Name is required')
         .min(2, 'Name must be at least 2 characters')
-        .max(7, 'Name must be at most 7 characters')
-        .refine(value => value.trim().length > 0, {
-            message: 'Name cannot be just spaces'
-        }),
+        .max(16, 'Name must be at most 16 characters'),
     email: z.string()
         .nonempty('Email is required')
-        .email('Invalid email address')
-        .refine(value => value.trim().length > 0, {
-            message: 'Email cannot be just spaces'
-        }),
+        .email('Invalid email address'),
     password: z.string()
         .nonempty('Password is required')
         .min(6, 'Password must be at least 6 characters')
-        .max(12, 'Password must be at most 12 characters')
-        .refine(value => value.trim().length > 0, {
-            message: 'Password cannot be just spaces'
-        }),
+        .max(50, 'Password must be at most 50 characters'),
     terms: z.boolean().refine(value => value === true, {
         message: 'You must accept the terms and conditions'
     })
@@ -61,17 +52,17 @@ export const RegistrationForm = () => {
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = async ({ terms, ...data  }: FormData) => {
+    const onSubmit = async (formData: FormData) => {
+        const data: Omit<FormData, 'terms'> = { ...formData };
+        delete (data as Partial<FormData>).terms;
         try {
-            const hashedPassword = await hashPassword(data.password);
-            const securedData = { ...data, password: hashedPassword };
-            const response = await registerUser(securedData);
+            const hashedPassword = await hashString(data.password);
+            const response = await registerUser({ ...data, password: hashedPassword });
             console.log('Form Data:', response);
             reset();
         } catch (error) {
             console.error('Error submitting form:', error);
         }
-
     };
 
     return (

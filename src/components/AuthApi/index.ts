@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { hashPassword } from '../entities/utils.ts';
+import { hashString } from '../Utils';
 
 
 const api = axios.create({
@@ -13,7 +13,6 @@ type RegistrationData = {
     name: string;
     email: string;
     password: string;
-    terms?: boolean;
 };
 
 type RegisterResponse = {
@@ -22,13 +21,8 @@ type RegisterResponse = {
 };
 
 export const registerUser = async (data: RegistrationData):Promise<RegisterResponse> => {
-    if (!data.password) {
-        throw new Error('Password is required for registration.');
-    }
-
     try {
-        const hashedPassword = await hashPassword(data.password);
-        const requestData = { ...data, password: hashedPassword };
+        const requestData = { ...data, password: hashString };
         const response = await api.post('/registration', requestData);
         return response.data;
     } catch (error) {
