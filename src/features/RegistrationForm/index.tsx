@@ -6,12 +6,21 @@ import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/mate
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
+import { registerUser } from '../../components/AuthApi'
 
 
 const schema = z.object({
-    name: z.string().nonempty('Name is required').min(2, 'Name must be at least 2 characters'),
-    email: z.string().nonempty('Email is required').email('Invalid email address'),
-    password: z.string().nonempty('Password is required').min(6, 'Password must be at least 6 characters'),
+    name: z.string()
+        .nonempty('Name is required')
+        .min(2, 'Name must be at least 2 characters')
+        .max(16, 'Name must be at most 16 characters'),
+    email: z.string()
+        .nonempty('Email is required')
+        .email('Invalid email address'),
+    password: z.string()
+        .nonempty('Password is required')
+        .min(6, 'Password must be at least 6 characters')
+        .max(50, 'Password must be at most 50 characters'),
     terms: z.boolean().refine(value => value === true, {
         message: 'You must accept the terms and conditions'
     })
@@ -42,9 +51,20 @@ export const RegistrationForm = () => {
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = (data: FormData) => {
-        console.log('Form Data:', data);
-        reset();
+    const onSubmit = async (formData: FormData) => {
+
+        try {
+            const data = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+            };
+            const response = await registerUser(data);
+            reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+
     };
 
     return (
@@ -64,7 +84,9 @@ export const RegistrationForm = () => {
                 label='Your Name:'
                 autoComplete='name'
                 autoFocus
-                {...register('name')}
+                {...register('name', {
+                    onChange: (e) => setValue('name', e.target.value.replace(/\s/g, ''), { shouldValidate: true })
+                })}
                 error={!!errors.name}
                 helperText={errors.name?.message || ''}
             />
@@ -73,7 +95,9 @@ export const RegistrationForm = () => {
                 label='Your E-mail:'
                 type='email'
                 autoComplete='email'
-                {...register('email')}
+                {...register('email', {
+                    onChange: (e) => setValue('email', e.target.value.replace(/\s/g, ''), { shouldValidate: true })
+                })}
                 error={!!errors.email}
                 helperText={errors.email?.message || ''}
             />
@@ -82,7 +106,9 @@ export const RegistrationForm = () => {
                 label='Password:'
                 type='password'
                 autoComplete='current-password'
-                {...register('password')}
+                {...register('password', {
+                    onChange: (e) => setValue('password', e.target.value.replace(/\s/g, ''), { shouldValidate: true })
+                })}
                 error={!!errors.password}
                 helperText={errors.password?.message || ''}
             />
