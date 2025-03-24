@@ -6,7 +6,6 @@ import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/mate
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { hashString } from '../../components/Utils';
 import { registerUser } from '../../components/AuthApi'
 
 
@@ -53,16 +52,19 @@ export const RegistrationForm = () => {
     }, [isValid, errors, setFocus]);
 
     const onSubmit = async (formData: FormData) => {
-        const data: Omit<FormData, 'terms'> = { ...formData };
-        delete (data as Partial<FormData>).terms;
+
         try {
-            const hashedPassword = await hashString(data.password);
-            const response = await registerUser({ ...data, password: hashedPassword });
-            console.log('Form Data:', response);
+            const data = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+            };
+            const response = await registerUser(data);
             reset();
         } catch (error) {
             console.error('Error submitting form:', error);
         }
+
     };
 
     return (

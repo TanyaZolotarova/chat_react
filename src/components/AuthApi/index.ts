@@ -21,16 +21,19 @@ type RegisterResponse = {
 };
 
 export const registerUser = async (data: RegistrationData):Promise<RegisterResponse> => {
+
     try {
-        const requestData = { ...data, password: hashString };
+        const hashedPassword = await hashString(data.password);
+        const requestData = { ...data, password: hashedPassword };
         const response = await api.post('/registration', requestData);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error('Axios error:', error.response?.data || error.message);
         } else {
-            console.error('Unexpected error:', error);
+            console.error('Unexpected error occurred during registration:', error);
         }
         throw error;
     }
+
 };
