@@ -5,11 +5,17 @@ import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
+import { loginUser } from '../../components/AuthApi';
 
 
 const schema = z.object({
-    email: z.string().nonempty('Email is required').email('Invalid email address'),
-    password: z.string().nonempty('Password is required').min(6, 'Password must be at least 6 characters'),
+    email: z.string()
+        .nonempty('Email is required')
+        .email('Invalid email address'),
+    password: z.string()
+        .nonempty('Password is required')
+        .min(6, 'Password must be at least 6 characters')
+        .max(50, 'Password must be at most 50 characters'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -33,10 +39,21 @@ export const LoginForm = () => {
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = (data: FormData) => {
-        console.log('Form Data:', data);
-        reset();
+    const onSubmit = async (formData: FormData) => {
+
+        try {
+            const data = {
+                email: formData.email,
+                password: formData.password,
+            };
+            const response = await loginUser(data);
+            reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+
     }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TitleText
