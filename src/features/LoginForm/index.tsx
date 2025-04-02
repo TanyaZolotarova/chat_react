@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import {useCallback, useEffect} from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { loginUser } from '../../components/AuthApi';
+import { loginUser } from '../../store/auth/authActions.ts';
+import { AppDispatch } from '../../store/store.ts';
 
 
 const schema = z.object({
@@ -26,7 +28,8 @@ export const LoginForm = () => {
         handleSubmit,
         formState: { errors, isValid },
         setFocus,
-        reset
+        reset,
+        setError,
     } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
@@ -39,20 +42,32 @@ export const LoginForm = () => {
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = async (formData: FormData) => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const onSubmit = useCallback(async (formData: FormData) => {
 
         try {
             const data = {
                 email: formData.email,
                 password: formData.password,
             };
-            const response = await loginUser(data);
+            const resultAction = await dispatch(loginUser(data));
+
+            if (loginUser.rejected.match(resultAction)) {
+                const errorMessage = resultAction.payload?.message || 'Login failed. Please try again.';
+                setError('email', {
+                    type: 'server',
+                    message: errorMessage,
+                });
+                return;
+            }
             reset();
         } catch (error) {
-            console.error('Error submitting form:', error);
+            console.error('Unexpected error during form submission:', error);
         }
 
-    }
+    }, [dispatch, reset, setError]);
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
