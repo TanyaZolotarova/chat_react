@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginUser } from './authActions';
 
 
-type AuthState = {
+interface AuthState {
     authToken: string | null;
     refreshToken: string | null;
     loading: boolean;
     error: string | null;
-};
+}
 
 const initialState: AuthState = {
     authToken: null,
@@ -23,6 +23,7 @@ const authSlice = createSlice({
         logout: (state) => {
             state.authToken = null;
             state.refreshToken = null;
+            state.error = null;
         },
     },
     extraReducers: (builder) => {

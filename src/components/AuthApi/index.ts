@@ -9,16 +9,26 @@ const api = axios.create({
     },
 });
 
-type RegistrationData = {
+interface RegistrationData {
     name: string;
     email: string;
     password: string;
-};
+}
 
-type RegisterResponse = {
+interface RegisterResponse {
     id: string;
     message: string;
-};
+}
+
+interface LoginData {
+    email: string;
+    password: string;
+}
+
+interface LoginResponse {
+    authToken: string;
+    refreshToken: string;
+}
 
 export const registerUser = async (data: RegistrationData):Promise<RegisterResponse> => {
 
@@ -36,4 +46,12 @@ export const registerUser = async (data: RegistrationData):Promise<RegisterRespo
         throw error;
     }
 
+};
+
+export const submitLogin  = async (data: LoginData): Promise<LoginResponse> => {
+    const hashedPassword = await hashString(data.password);
+    const requestData = { ...data, password: hashedPassword };
+
+    const response = await api.post('/login', requestData);
+    return response.data;
 };

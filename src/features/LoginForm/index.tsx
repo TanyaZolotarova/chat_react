@@ -1,4 +1,4 @@
-import {useCallback, useEffect} from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,8 +7,7 @@ import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
 import { loginUser } from '../../store/auth/authActions.ts';
-import { AppDispatch } from '../../store/store.ts';
-
+import { AppDispatch } from '../../app/store.ts';
 
 const schema = z.object({
     email: z.string()
@@ -29,7 +28,6 @@ export const LoginForm = () => {
         formState: { errors, isValid },
         setFocus,
         reset,
-        setError,
     } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
@@ -45,28 +43,17 @@ export const LoginForm = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const onSubmit = useCallback(async (formData: FormData) => {
-
         try {
             const data = {
                 email: formData.email,
                 password: formData.password,
             };
-            const resultAction = await dispatch(loginUser(data));
-
-            if (loginUser.rejected.match(resultAction)) {
-                const errorMessage = resultAction.payload?.message || 'Login failed. Please try again.';
-                setError('email', {
-                    type: 'server',
-                    message: errorMessage,
-                });
-                return;
-            }
+            await dispatch(loginUser(data));
             reset();
         } catch (error) {
             console.error('Unexpected error during form submission:', error);
         }
-
-    }, [dispatch, reset, setError]);
+    }, [dispatch, reset]);
 
 
     return (
