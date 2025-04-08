@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser } from './authActions';
+import { authenticateUser } from './authThunks.ts';
 
 
 interface AuthState {
@@ -28,16 +28,16 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(loginUser.pending, (state) => {
+            .addCase(authenticateUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(loginUser.fulfilled, (state, action: PayloadAction<{ authToken: string; refreshToken: string }>) => {
+            .addCase(authenticateUser.fulfilled, (state, action: PayloadAction<{ authToken: string; refreshToken: string }>) => {
                 state.loading = false;
                 state.authToken = action.payload.authToken;
                 state.refreshToken = action.payload.refreshToken;
             })
-            .addCase(loginUser.rejected, (state, action) => {
+            .addCase(authenticateUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload?.message || 'An unexpected error occurred';
             });

@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { loginUser } from '../../store/auth/authActions.ts';
+import { authenticateUser } from '../../entities/auth/authThunks.ts';
 import { AppDispatch } from '../../app/store.ts';
 
 const schema = z.object({
@@ -48,7 +48,7 @@ export const LoginForm = () => {
                 email: formData.email,
                 password: formData.password,
             };
-            await dispatch(loginUser(data));
+            await dispatch(authenticateUser(data));
             reset();
         } catch (error) {
             console.error('Unexpected error during form submission:', error);

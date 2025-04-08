@@ -20,12 +20,12 @@ interface RegisterResponse {
     message: string;
 }
 
-interface LoginData {
+export interface LoginData {
     email: string;
     password: string;
 }
 
-interface LoginResponse {
+export interface LoginResponse {
     authToken: string;
     refreshToken: string;
 }
@@ -48,7 +48,7 @@ export const registerUser = async (data: RegistrationData):Promise<RegisterRespo
 
 };
 
-export const submitLogin  = async (data: LoginData): Promise<LoginResponse> => {
+export const loginUser  = async (data: LoginData): Promise<LoginResponse> => {
     const hashedPassword = await hashString(data.password);
     const requestData = { ...data, password: hashedPassword };
 
