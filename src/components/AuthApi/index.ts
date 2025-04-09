@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { hashString } from '../Utils';
 
-
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     headers: {
@@ -9,16 +8,26 @@ const api = axios.create({
     },
 });
 
-type RegistrationData = {
+interface RegistrationData {
     name: string;
     email: string;
     password: string;
-};
+}
 
-type RegisterResponse = {
+interface RegisterResponse {
     id: string;
     message: string;
-};
+}
+
+export interface LoginData {
+    email: string;
+    password: string;
+}
+
+export interface LoginResponse {
+    authToken: string;
+    refreshToken: string;
+}
 
 export const registerUser = async (data: RegistrationData):Promise<RegisterResponse> => {
 
@@ -36,4 +45,12 @@ export const registerUser = async (data: RegistrationData):Promise<RegisterRespo
         throw error;
     }
 
+};
+
+export const loginUser  = async (data: LoginData): Promise<LoginResponse> => {
+    const hashedPassword = await hashString(data.password);
+    const requestData = { ...data, password: hashedPassword };
+
+    const response = await api.post('/login', requestData);
+    return response.data;
 };

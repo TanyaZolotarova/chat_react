@@ -8,7 +8,6 @@ import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
 import { registerUser } from '../../components/AuthApi'
 
-
 const schema = z.object({
     name: z.string()
         .nonempty('Name is required')

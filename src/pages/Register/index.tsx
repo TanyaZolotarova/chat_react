@@ -4,7 +4,6 @@ import { RegistrationForm } from '../../features/RegistrationForm';
 import { TitleText } from '../../components/TitleText';
 import { LinkBtn } from '../../components/LinkBtn';
 
-
 export const Register = () => {
     return (
         <Container

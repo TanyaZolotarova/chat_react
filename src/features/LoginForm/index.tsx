@@ -1,15 +1,22 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-
+import { authenticateUser } from '../../entities/auth/authThunks.ts';
+import { AppDispatch } from '../../app/store.ts';
 
 const schema = z.object({
-    email: z.string().nonempty('Email is required').email('Invalid email address'),
-    password: z.string().nonempty('Password is required').min(6, 'Password must be at least 6 characters'),
+    email: z.string()
+        .nonempty('Email is required')
+        .email('Invalid email address'),
+    password: z.string()
+        .nonempty('Password is required')
+        .min(6, 'Password must be at least 6 characters')
+        .max(50, 'Password must be at most 50 characters'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -20,7 +27,7 @@ export const LoginForm = () => {
         handleSubmit,
         formState: { errors, isValid },
         setFocus,
-        reset
+        reset,
     } = useForm<FormData>({
         resolver: zodResolver(schema),
         mode: 'onChange'
@@ -33,10 +40,21 @@ export const LoginForm = () => {
         }
     }, [isValid, errors, setFocus]);
 
-    const onSubmit = (data: FormData) => {
-        console.log('Form Data:', data);
-        reset();
-    }
+    const dispatch = useDispatch<AppDispatch>();
+
+    const onSubmit = useCallback(async (formData: FormData) => {
+        try {
+            const data = {
+                email: formData.email,
+                password: formData.password,
+            };
+            await dispatch(authenticateUser(data));
+            reset();
+        } catch (error) {
+            console.error('Unexpected error during form submission:', error);
+        }
+    }, [dispatch, reset]);
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TitleText
