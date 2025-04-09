@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authenticateUser } from './authThunks.ts';
 
-
 interface AuthState {
     authToken: string | null;
     refreshToken: string | null;

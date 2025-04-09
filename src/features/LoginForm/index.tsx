@@ -55,7 +55,6 @@ export const LoginForm = () => {
         }
     }, [dispatch, reset]);
 
-
     return (
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TitleText
