@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -42,14 +43,17 @@ export const LoginForm = () => {
 
     const dispatch = useDispatch<AppDispatch>();
 
+    const navigate = useNavigate();
+
     const onSubmit = useCallback(async (formData: FormData) => {
         try {
             const data = {
                 email: formData.email,
                 password: formData.password,
             };
-            await dispatch(authenticateUser(data));
+            await dispatch(authenticateUser(data)).unwrap();
             reset();
+            navigate('/chats');
         } catch (error) {
             console.error('Unexpected error during form submission:', error);
         }
