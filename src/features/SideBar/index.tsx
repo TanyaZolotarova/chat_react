@@ -13,33 +13,43 @@ import {
 } from '@mui/material';
 import { Archive, Group, Home, Logout,  Person } from '@mui/icons-material';
 import { logout } from '../../entities/auth/authSlice.ts'
+import { generateId } from '../../components/Utils';
 import './style.css';
 
 interface MenuItem {
+    id: number;
+    text: string;
+    icon: React.ReactNode;
     action?: string;
     link?: string;
     badge?: number;
-    icon: React.ReactNode;
-    text: string;
 }
 
-const menuItems = [
-    { text: 'Profile', icon: <Person />, link: '/profile' },
-    { text: 'All chats', icon: <Home />, link: '/chats', badge: 0 },
-    { text: 'Archive chats', icon: <Archive />, link: '/chats?tab=archive', badge: 0 },
-    { text: 'Contacts', icon: <Group />, link: '/chats?tab=contacts' },
-    { text: 'Log out', icon: <Logout />, action: 'logout' },
+const menuItems: MenuItem[] = [
+    { text: 'Profile', icon: <Person />, action: 'profile', id: generateId() },
+    { text: 'All chats', icon: <Home />, link: '/chats', badge: 0, id: generateId() },
+    { text: 'Archive chats', icon: <Archive />, link: '/chats?tab=archive', badge: 0, id: generateId() },
+    { text: 'Contacts', icon: <Group />, link: '/chats?tab=contacts', id: generateId() },
+    { text: 'Log out', icon: <Logout />, action: 'logout', id: generateId() },
 ];
 
 export const SideBar = () => {
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleItemClick = (item: MenuItem) => {
-        if (item.action === 'logout') {
-            dispatch(logout());
-            navigate('/');
+        const actions: Record<string, () => void> = {
+            logout: () => {
+                dispatch(logout());
+                navigate('/');
+            },
+            profile: () => {
+                navigate('/profile');
+            },
+        };
+
+        if (item.action && actions[item.action]) {
+            actions[item.action]();
         } else if (item.link) {
             navigate(item.link);
         }
@@ -50,17 +60,13 @@ export const SideBar = () => {
             <Box className='wrapper'>
                 <Avatar alt='User Avatar' src='' className='avatar'/>
                 <List>
-                    {menuItems.map((item, index) => (
-                        <ListItem key={index} disablePadding sx={{ justifyContent: 'center', marginY: 1 }}>
+                    {menuItems.map((item) => (
+                        <ListItem key={item.id} sx={{ justifyContent: 'center', marginY: 1 }} disablePadding>
                             <ListItemButton sx={{ display: 'flex', flexDirection: 'column', color: '#fff' }} onClick={() => handleItemClick(item)}>
                                 <ListItemIcon sx={{ color: '#fff', minWidth: 'auto' }}>
-                                    {item.badge ? (
-                                        <Badge badgeContent={item.badge} color="error" overlap='circular'>
+                                    <Badge color='error' overlap='circular'>
                                             {item.icon}
                                         </Badge>
-                                    ) : (
-                                        item.icon
-                                    )}
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.text}
