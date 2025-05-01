@@ -5,13 +5,11 @@ import { SideBar } from '../../features/SideBar';
 export const ChatList = () => {
     const [searchParams] = useSearchParams();
     const tab = searchParams.get('tab') || 'default';
-    const tabs: Record<string, JSX.Element>
-        = {
+    const tabs: Record<string, JSX.Element> = {
         'archive': <div>Archive chats</div>,
         'contacts': <div>Contacts</div>,
         'default': <div>All chats</div>
     };
-
 
     return(
         <Container style={{ display: 'flex' }}>
