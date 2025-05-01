@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
 import { logout } from '../../entities/auth/authSlice.ts'
-import { generateId } from '../../components/Utils';
+import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
 interface MenuItem {
@@ -24,6 +24,8 @@ interface MenuItem {
     link?: string;
     badge?: number;
 }
+
+const generateId = getIdGenerator();
 
 const menuItems: MenuItem[] = [
     {text: 'Profile', icon: <Person/>, link: '/profile', id: generateId()},
