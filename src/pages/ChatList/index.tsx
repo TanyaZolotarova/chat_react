@@ -8,7 +8,7 @@ export const ChatList = () => {
     const tabs: Record<string, JSX.Element> = {
         'archive': <div>Archive chats</div>,
         'contacts': <div>Contacts</div>,
-        'default': <div>All chats</div>
+        'default': <div>All chats</div>,
     };
 
     return(

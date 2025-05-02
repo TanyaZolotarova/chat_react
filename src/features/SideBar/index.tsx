@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
     Avatar,
@@ -12,6 +12,7 @@ import {
     ListItemText
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
+import { AppDispatch } from '../../app/store.ts';
 import { logout } from '../../entities/auth/authSlice.ts'
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
@@ -20,6 +21,7 @@ interface MenuItem {
     id: number;
     text: string;
     icon: React.ReactNode;
+    onClick: (dispatch: AppDispatch, navigate: NavigateFunction) => void;
     action?: string;
     link?: string;
     badge?: number;
@@ -28,28 +30,17 @@ interface MenuItem {
 const generateId = getIdGenerator();
 
 const menuItems: MenuItem[] = [
-    {text: 'Profile', icon: <Person/>, link: '/profile', id: generateId()},
-    {text: 'All chats', icon: <Home/>, link: '/chats', id: generateId()},
-    {text: 'Archive chats', icon: <Archive/>, link: '/chats?tab=archive', id: generateId()},
-    {text: 'Contacts', icon: <Group/>, link: '/chats?tab=contacts', id: generateId()},
-    {text: 'Log out', icon: <Logout/>, action: 'logout', id: generateId()},
+    // TODO: open profile modal
+    {text: 'Profile', icon: <Person/>, id: generateId(), onClick: () => {console.log('Open profile modal');}},
+    {text: 'All chats', icon: <Home/>, id: generateId(), onClick: (_, navigate) => navigate('/')},
+    {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=archive')},
+    {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=contacts')},
+    {text: 'Log out', icon: <Logout/>, id: generateId(),  onClick: (dispatch, navigate) => {dispatch(logout()); navigate('/login');}},
 ];
 
 export const SideBar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const handleItemClick = (item: MenuItem) => {
-        if (item.action === 'logout') {
-            dispatch(logout());
-            navigate('/');
-        } else if (item.text === 'Profile') {
-            // TODO: open profile modal
-            console.log('Open profile modal');
-        } else if (item.link) {
-            navigate(item.link);
-        }
-    };
 
     return (
         <Drawer variant='permanent' className='sidebar'>
@@ -59,7 +50,7 @@ export const SideBar = () => {
                     {menuItems.map((item) => (
                         <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
                             <ListItemButton sx={{display: 'flex', flexDirection: 'column', color: '#fff'}}
-                                            onClick={() => handleItemClick(item)}>
+                                            onClick={() => item.onClick(dispatch, navigate)}>
                                 <ListItemIcon sx={{color: '#fff', minWidth: 'auto'}}>
                                     <Badge color='error' overlap='circular'>
                                         {item.icon}

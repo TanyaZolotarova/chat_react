@@ -4,14 +4,20 @@ import { RootState } from '../../app/store.ts';
 
 interface Props {
     children: JSX.Element;
+    requireAuth?: boolean;
 }
 
-export const AuthGuard = ({ children }: Props) => {
+export const ProtectedRoute = ({ children, requireAuth = true }: Props) => {
     const authToken = useSelector((state: RootState) => state.auth.authToken);
 
-    if (authToken) {
-        return <Navigate to='/chats' replace />;
+    if (requireAuth && !authToken) {
+        return <Navigate to='/login' replace />;
+    }
+
+    if (!requireAuth && authToken) {
+        return <Navigate to='/' replace />;
     }
 
     return children;
 };
+

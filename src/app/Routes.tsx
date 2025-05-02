@@ -3,24 +3,23 @@ import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
 import { ChatList } from '../pages/ChatList';
 import { NotFound } from '../pages/NotFound';
-import { ProtectedRoute } from './ProtectedRoute';
-import { AuthGuard } from '../entities/auth/authGuard.tsx';
+import { ProtectedRoute } from '../components/Helper/ProtectedRoute.tsx';
 
 export const AppRoutes = () => {
     return (
         <Router>
             <Routes>
-                <Route path='/' element={
-                    <AuthGuard>
+                <Route path='/login' element={
+                    <ProtectedRoute requireAuth={false}>
                         <Login />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 } />
                 <Route path='/register' element={
-                    <AuthGuard>
+                    <ProtectedRoute requireAuth={false}>
                         <Register />
-                    </AuthGuard>
+                    </ProtectedRoute>
                 } />
-                <Route path='/chats' element={
+                <Route path='/' element={
                     <ProtectedRoute>
                         <ChatList />
                     </ProtectedRoute>
