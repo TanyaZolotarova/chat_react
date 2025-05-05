@@ -1,14 +1,12 @@
 import { Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../app/store.ts';
 
 interface Props {
     children: JSX.Element;
+    authToken: string | null;
     requireAuth?: boolean;
 }
 
-export const ProtectedRoute = ({ children, requireAuth = true }: Props) => {
-    const authToken = useSelector((state: RootState) => state.auth.authToken);
+export const ProtectedRoute = ({ children, requireAuth = true, authToken }: Props) => {
 
     if (requireAuth && !authToken) {
         return <Navigate to='/login' replace />;
