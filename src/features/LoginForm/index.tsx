@@ -34,7 +34,7 @@ export const LoginForm = () => {
     });
 
     useEffect(() => {
-        if (!isValid) {
+        if (!isValid && Object.keys(errors).length > 0) {
             const firstErrorField = Object.keys(errors)[0] as keyof FormData;
             setFocus(firstErrorField);
         }
@@ -48,7 +48,7 @@ export const LoginForm = () => {
                 email: formData.email,
                 password: formData.password,
             };
-            await dispatch(authenticateUser(data));
+            await dispatch(authenticateUser(data)).unwrap();
             reset();
         } catch (error) {
             console.error('Unexpected error during form submission:', error);
