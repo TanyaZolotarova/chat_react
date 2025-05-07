@@ -6,7 +6,7 @@ interface Props {
     requireAuth?: boolean;
 }
 
-export const ProtectedRoute = ({ children, requireAuth = true, authToken }: Props) => {
+export const ProtectedRoute = ({ children, authToken, requireAuth = true }: Props) => {
 
     if (requireAuth && !authToken) {
         return <Navigate to='/login' replace />;
