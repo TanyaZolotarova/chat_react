@@ -27,25 +27,28 @@ interface MenuItem {
     badge?: number;
 }
 
+interface SideBarProps {
+    onProfileClick: () => void;
+}
+
 const generateId = getIdGenerator();
 
-const menuItems: MenuItem[] = [
-    // TODO: open profile modal
-    {text: 'Profile', icon: <Person/>, id: generateId(), onClick: () => {console.log('Open profile modal');}},
-    {text: 'All chats', icon: <Home/>, id: generateId(), onClick: (_, navigate) => navigate('/')},
-    {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=archive')},
-    {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=contacts')},
-    {text: 'Log out', icon: <Logout/>, id: generateId(),  onClick: (dispatch, navigate) => {dispatch(logout()); navigate('/login');}},
-];
-
-export const SideBar = () => {
+export const SideBar = ({ onProfileClick }: SideBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const menuItems: MenuItem[] = [
+        {text: 'Profile', icon: <Person/>, id: generateId(), onClick: () => onProfileClick()},
+        {text: 'All chats', icon: <Home/>, id: generateId(), onClick: (_, navigate) => navigate('/')},
+        {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=archive')},
+        {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=contacts')},
+        {text: 'Log out', icon: <Logout/>, id: generateId(),  onClick: (dispatch, navigate) => {dispatch(logout()); navigate('/login');}},
+    ];
 
     return (
         <Drawer variant='permanent' className='sidebar'>
             <Box className='wrapper'>
-                <Avatar alt='User Avatar' src='' className='avatar'/>
+                <Avatar alt='User Avatar' src={localStorage.getItem('avatar') || ''} className='avatar'/>
                 <List>
                     {menuItems.map((item) => (
                         <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>

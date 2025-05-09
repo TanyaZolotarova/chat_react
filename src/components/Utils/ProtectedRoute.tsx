@@ -18,4 +18,3 @@ export const ProtectedRoute = ({ children, authToken, requireAuth = true }: Prop
 
     return children;
 };
-

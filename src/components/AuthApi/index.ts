@@ -35,6 +35,10 @@ export const registerUser = async (data: RegistrationData):Promise<RegisterRespo
         const hashedPassword = await hashString(data.password);
         const requestData = { ...data, password: hashedPassword };
         const response = await api.post('/registration', requestData);
+        //TODO: delete it in localStorage
+        localStorage.setItem('email', data.email);
+        localStorage.setItem('name', data.name);
+
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -52,5 +56,8 @@ export const loginUser  = async (data: LoginData): Promise<LoginResponse> => {
     const requestData = { ...data, password: hashedPassword };
 
     const response = await api.post('/login', requestData);
+    //TODO: delete it in localStorage
+    localStorage.setItem('email', data.email);
+
     return response.data;
 };

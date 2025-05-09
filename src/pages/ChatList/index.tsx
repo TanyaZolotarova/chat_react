@@ -1,9 +1,12 @@
 import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
 import { Container } from '@mui/material';
 import { SideBar } from '../../features/SideBar';
+import { ProfileModal } from '../../features/ProfileModal';
 
 export const ChatList = () => {
     const [searchParams] = useSearchParams();
+    const [openProfile, setOpenProfile] = useState(false);
     const tab = searchParams.get('tab') || 'default';
     const tabs: Record<string, JSX.Element> = {
         'archive': <div>Archive chats</div>,
@@ -16,7 +19,11 @@ export const ChatList = () => {
             <div>
                 {tabs[tab]}
             </div>
-            <SideBar />
+            <SideBar onProfileClick={() => setOpenProfile(true)}/>
+            <ProfileModal
+                open={openProfile}
+                onClose={() => setOpenProfile(false)}
+            />
             <main>
                 <h1>Chat</h1>
             </main>
