@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { hashString } from '../Utils';
+import { setUserData } from '../../entities/auth/authSlice.ts';
+import { AppDispatch } from '../../app/store.ts';
+
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -29,15 +32,18 @@ export interface LoginResponse {
     refreshToken: string;
 }
 
-export const registerUser = async (data: RegistrationData):Promise<RegisterResponse> => {
+export const registerUser = async (data: RegistrationData, dispatch: AppDispatch):Promise<RegisterResponse> => {
 
     try {
         const hashedPassword = await hashString(data.password);
         const requestData = { ...data, password: hashedPassword };
         const response = await api.post('/registration', requestData);
         //TODO: delete it in localStorage
-        localStorage.setItem('email', data.email);
-        localStorage.setItem('name', data.name);
+        dispatch(setUserData({
+            name: data.name,
+            email: data.email,
+            avatar: ''
+        }));
 
         return response.data;
     } catch (error) {
@@ -51,13 +57,10 @@ export const registerUser = async (data: RegistrationData):Promise<RegisterRespo
 
 };
 
-export const loginUser  = async (data: LoginData): Promise<LoginResponse> => {
+export const loginUser = async (data: LoginData ): Promise<LoginResponse> => {
     const hashedPassword = await hashString(data.password);
     const requestData = { ...data, password: hashedPassword };
 
     const response = await api.post('/login', requestData);
-    //TODO: delete it in localStorage
-    localStorage.setItem('email', data.email);
-
     return response.data;
 };

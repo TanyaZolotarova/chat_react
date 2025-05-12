@@ -1,5 +1,5 @@
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     Avatar,
     Badge,
@@ -12,7 +12,7 @@ import {
     ListItemText
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
-import { AppDispatch } from '../../app/store.ts';
+import { AppDispatch, RootState } from '../../app/store.ts';
 import { logout } from '../../entities/auth/authSlice.ts'
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
@@ -37,6 +37,8 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const avatar = useSelector((state: RootState) => state.auth.avatar);
+
     const menuItems: MenuItem[] = [
         {text: 'Profile', icon: <Person/>, id: generateId(), onClick: () => onProfileClick()},
         {text: 'All chats', icon: <Home/>, id: generateId(), onClick: (_, navigate) => navigate('/')},
@@ -48,7 +50,7 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
     return (
         <Drawer variant='permanent' className='sidebar'>
             <Box className='wrapper'>
-                <Avatar alt='User Avatar' src={localStorage.getItem('avatar') || ''} className='avatar'/>
+                <Avatar alt='User Avatar' src={avatar || ''} className='avatar'/>
                 <List>
                     {menuItems.map((item) => (
                         <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
