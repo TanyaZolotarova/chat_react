@@ -14,6 +14,7 @@ import {
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
 import { AppDispatch, RootState } from '../../app/store.ts';
 import { logout } from '../../entities/auth/authSlice.ts'
+import { logoutUser } from '../../entities/user/userSlice.ts';
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
@@ -37,14 +38,18 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const avatar = useSelector((state: RootState) => state.auth.avatar);
+    const avatar = useSelector((state: RootState) => state.user.avatar);
 
     const menuItems: MenuItem[] = [
         {text: 'Profile', icon: <Person/>, id: generateId(), onClick: () => onProfileClick()},
         {text: 'All chats', icon: <Home/>, id: generateId(), onClick: (_, navigate) => navigate('/')},
         {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=archive')},
         {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: (_, navigate) => navigate('/?tab=contacts')},
-        {text: 'Log out', icon: <Logout/>, id: generateId(),  onClick: (dispatch, navigate) => {dispatch(logout()); navigate('/login');}},
+        {text: 'Log out', icon: <Logout/>, id: generateId(), onClick: (dispatch, navigate) => {
+                dispatch(logout());
+                dispatch(logoutUser());
+                navigate('/login');
+            }},
     ];
 
     return (

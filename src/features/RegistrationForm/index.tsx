@@ -8,6 +8,7 @@ import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
 import { registerUser } from '../../components/AuthApi'
+import { setUserData } from '../../entities/user/userSlice.ts';
 import { AppDispatch } from '../../app/store.ts';
 
 const schema = z.object({
@@ -44,7 +45,6 @@ export const RegistrationForm = () => {
     });
 
     const dispatch = useDispatch<AppDispatch>();
-
     const termsValue = watch('terms', false);
 
     useEffect(() => {
@@ -62,7 +62,14 @@ export const RegistrationForm = () => {
                 email: formData.email,
                 password: formData.password,
             };
-            const response = await registerUser(data, dispatch);
+            const response = await registerUser(data);
+
+            dispatch(setUserData({
+                name: data.name,
+                email: data.email,
+                avatar: ''
+            }));
+
             reset();
         } catch (error) {
             console.error('Error submitting form:', error);

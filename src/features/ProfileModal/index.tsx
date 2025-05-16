@@ -13,9 +13,8 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { setName, setEmail, setAvatar } from '../../entities/auth/authSlice';
+import { setUserData } from '../../entities/user/userSlice.ts';
 import { RootState } from '../../app/store.ts';
-
 
 interface ProfileModalProps {
     open: boolean;
@@ -24,7 +23,10 @@ interface ProfileModalProps {
 
 export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
     const dispatch = useDispatch();
-    const { avatar, name: storedName, email: storedEmail } = useSelector((state: RootState) => state.auth);
+
+    const { name: storedName, email: storedEmail, avatar } = useSelector(
+        (state: RootState) => state.user
+    );
 
     const [localName, setLocalName] = useState(storedName);
     const [localEmail, setLocalEmail] = useState(storedEmail);
@@ -39,24 +41,24 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
         }
     }, [open, storedName, storedEmail, avatar]);
 
-    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setLocalAvatar(imageUrl);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setLocalAvatar(base64);
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleSave = () => {
-        if (localName !== storedName) {
-            dispatch(setName(localName));
-        }
-        if (localEmail !== storedEmail) {
-            dispatch(setEmail(localEmail));
-        }
-        if (localAvatar !== avatar) {
-            dispatch(setAvatar(localAvatar));
-        }
+        dispatch(setUserData({
+                name: localName,
+                email: localEmail,
+                avatar: localAvatar
+            }));
         onClose();
     };
 
@@ -96,7 +98,6 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
                     </DialogActions>
                 </Container>
             </Dialog>
-
             <Dialog open={showFullImage} onClose={() => setShowFullImage(false)}>
                 <DialogTitle
                     sx={{
