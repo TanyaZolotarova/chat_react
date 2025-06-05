@@ -28,37 +28,42 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
         (state: RootState) => state.user
     );
 
-    const [localName, setLocalName] = useState(storedName);
-    const [localEmail, setLocalEmail] = useState(storedEmail);
-    const [localAvatar, setLocalAvatar] = useState(avatar);
+    const [localName, setLocalName] = useState<string | null>(storedName ?? null);
+    const [localEmail, setLocalEmail] = useState<string | null>(storedEmail ?? null);
+    const [localAvatar, setLocalAvatar] = useState<string | null>(avatar ?? null);
     const [showFullImage, setShowFullImage] = useState(false);
 
     useEffect(() => {
         if (open) {
-            setLocalName(storedName);
-            setLocalEmail(storedEmail);
-            setLocalAvatar(avatar);
+            setLocalName(storedName ?? null);
+            setLocalEmail(storedEmail ?? null);
+            setLocalAvatar(avatar ?? null);
         }
     }, [open, storedName, storedEmail, avatar]);
 
     const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                const base64 = reader.result as string;
-                setLocalAvatar(base64);
+                if (typeof reader.result === 'string') {
+                    setLocalAvatar(reader.result);
+                }
             };
             reader.readAsDataURL(file);
         }
+
     };
 
     const handleSave = () => {
-        dispatch(setUserData({
+        dispatch(
+            setUserData({
                 name: localName,
                 email: localEmail,
                 avatar: localAvatar
-            }));
+            })
+        );
         onClose();
     };
 

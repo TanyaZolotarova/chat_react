@@ -2,56 +2,45 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store.ts';
 
 interface UserState {
-    name: string;
-    email: string;
-    avatar: string;
+    avatar: string | null;
+    name?: string | null;
+    email?: string | null;
 }
 
-const STORAGE_KEY = 'user';
+const STORAGE_KEY = 'user-avatar';
 
 const loadUserFromStorage = (): UserState => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-        try {
-            return JSON.parse(stored);
-        } catch {
-            return { name: 'User', email: 'Not available', avatar: '' };
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            return {
+                avatar: parsed.avatar ?? null,
+                name: null,
+                email: null,
+            };
         }
+    } catch (error) {
+        console.warn('Failed to parse avatar from localStorage:', error);
     }
-    return { name: 'User', email: 'Not available', avatar: '' };
-};
-
-const saveUserToStorage = (user: UserState) => {
-    const { name, email } = user;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, email }));
-};
-
-const clearUserStorage = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    return { name: null, email: null, avatar: null };
 };
 
 const initialState: UserState = loadUserFromStorage();
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
         setUserData: (state, action: PayloadAction<UserState>) => {
-            const { name, email, avatar } = action.payload;
-            state.name = name;
-            state.email = email;
-            state.avatar = avatar;
-            saveUserToStorage(state);
-        },
-        logoutUser: (state) => {
-            state.name = 'User';
-            state.email = 'Not available';
-            state.avatar = '';
-            clearUserStorage();
+            state.name = action.payload.name;
+            state.email = action.payload.email;
+            state.avatar = action.payload.avatar;
         },
     },
 });
 
-export const { setUserData, logoutUser } = userSlice.actions;
+export const { setUserData } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user;
 export const selectUserName = (state: RootState) => state.user.name;
 export const selectUserEmail = (state: RootState) => state.user.email;

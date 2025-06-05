@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,9 +6,7 @@ import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/mate
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { registerUser } from '../../components/AuthApi'
-import { setUserData } from '../../entities/user/userSlice.ts';
-import { AppDispatch } from '../../app/store.ts';
+import { registerUser } from '../../components/AuthApi';
 
 const schema = z.object({
     name: z.string()
@@ -44,7 +41,6 @@ export const RegistrationForm = () => {
         mode: 'onChange'
     });
 
-    const dispatch = useDispatch<AppDispatch>();
     const termsValue = watch('terms', false);
 
     useEffect(() => {
@@ -62,13 +58,8 @@ export const RegistrationForm = () => {
                 email: formData.email,
                 password: formData.password,
             };
-            const response = await registerUser(data);
 
-            dispatch(setUserData({
-                name: data.name,
-                email: data.email,
-                avatar: ''
-            }));
+            await registerUser(data);
 
             reset();
         } catch (error) {
