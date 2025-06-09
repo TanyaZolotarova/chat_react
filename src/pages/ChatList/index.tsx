@@ -6,7 +6,7 @@ import { ProfileModal } from '../../features/ProfileModal';
 
 export const ChatList = () => {
     const [searchParams] = useSearchParams();
-    const [openProfile, setOpenProfile] = useState(false);
+    const [isProfileOpen , setIsProfileOpen ] = useState(false);
     const tab = searchParams.get('tab') || 'default';
     const tabs: Record<string, JSX.Element> = {
         'archive': <div>Archive chats</div>,
@@ -19,10 +19,10 @@ export const ChatList = () => {
             <div>
                 {tabs[tab]}
             </div>
-            <SideBar onProfileClick={() => setOpenProfile(true)}/>
+            <SideBar onProfileClick={() => setIsProfileOpen(true)}/>
             <ProfileModal
-                open={openProfile}
-                onClose={() => setOpenProfile(false)}
+                open={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
             />
             <main>
                 <h1>Chat</h1>

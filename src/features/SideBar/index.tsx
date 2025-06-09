@@ -1,4 +1,5 @@
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Avatar,
@@ -12,8 +13,9 @@ import {
     ListItemText
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
-import { AppDispatch, RootState } from '../../app/store.ts';
+import { RootState } from '../../app/store.ts';
 import { logout } from '../../entities/auth/authSlice.ts'
+import { clearUserData } from '../../entities/user/userSlice.ts';
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
@@ -21,7 +23,7 @@ interface MenuItem {
     id: number;
     text: string;
     icon: React.ReactNode;
-    onClick: (dispatch: AppDispatch, navigate: NavigateFunction) => void;
+    onClick: () => void;
     action?: string;
     link?: string;
     badge?: number;
@@ -39,23 +41,23 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
 
     const avatar = useSelector((state: RootState) => state.user.avatar);
 
-    const menuItems: MenuItem[] = [
+    const menuItems: MenuItem[] = useMemo(() => [
         { text: 'Profile', icon: <Person />, id: generateId(), onClick: onProfileClick },
         { text: 'All chats', icon: <Home />, id: generateId(), onClick: () => navigate('/') },
         { text: 'Archive chats', icon: <Archive />, id: generateId(), onClick: () => navigate('/?tab=archive') },
         { text: 'Contacts', icon: <Group />, id: generateId(), onClick: () => navigate('/?tab=contacts') },
-        { text: 'Log out', icon: <Logout />, id: generateId(), onClick: () => {dispatch(logout())} },
-    ];
+        { text: 'Log out', icon: <Logout />, id: generateId(), onClick: () => {dispatch(logout()); dispatch(clearUserData());} },
+    ], [onProfileClick, navigate, dispatch])
 
     return (
         <Drawer variant='permanent' className='sidebar'>
             <Box className='wrapper'>
-                <Avatar alt='User Avatar' src={avatar || ''} className='avatar'/>
+                <Avatar alt='User Avatar' src={avatar ?? ''} className='avatar'/>
                 <List>
                     {menuItems.map((item) => (
                         <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
                             <ListItemButton sx={{display: 'flex', flexDirection: 'column', color: '#fff'}}
-                                            onClick={() => item.onClick(dispatch, navigate)}>
+                                            onClick={item.onClick}>
                                 <ListItemIcon sx={{color: '#fff', minWidth: 'auto'}}>
                                     <Badge color='error' overlap='circular'>
                                         {item.icon}

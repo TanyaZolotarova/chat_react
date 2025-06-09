@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     Button,
@@ -24,22 +24,9 @@ interface ProfileModalProps {
 export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
     const dispatch = useDispatch();
 
-    const { name: storedName, email: storedEmail, avatar } = useSelector(
-        (state: RootState) => state.user
-    );
+    const { name, email, avatar } = useSelector((state: RootState) => state.user);
 
-    const [localName, setLocalName] = useState<string | null>(storedName ?? null);
-    const [localEmail, setLocalEmail] = useState<string | null>(storedEmail ?? null);
-    const [localAvatar, setLocalAvatar] = useState<string | null>(avatar ?? null);
     const [showFullImage, setShowFullImage] = useState(false);
-
-    useEffect(() => {
-        if (open) {
-            setLocalName(storedName ?? null);
-            setLocalEmail(storedEmail ?? null);
-            setLocalAvatar(avatar ?? null);
-        }
-    }, [open, storedName, storedEmail, avatar]);
 
     const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -48,7 +35,7 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
             const reader = new FileReader();
             reader.onloadend = () => {
                 if (typeof reader.result === 'string') {
-                    setLocalAvatar(reader.result);
+                    dispatch(setUserData({ name, email, avatar: reader.result }));
                 }
             };
             reader.readAsDataURL(file);
@@ -56,12 +43,16 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
 
     };
 
-    const handleSave = () => {
+    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const updatedName = formData.get('name')?.toString() || null;
+        const updatedEmail = formData.get('email')?.toString() || null;
         dispatch(
             setUserData({
-                name: localName,
-                email: localEmail,
-                avatar: localAvatar
+                name: updatedName,
+                email: updatedEmail,
+                avatar,
             })
         );
         onClose();
@@ -71,9 +62,10 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
         <>
             <Dialog open={open} onClose={onClose}>
                 <DialogTitle sx={{textAlign:'center', fontSize:'32px', fontWeight:'700'}}>Profile Info</DialogTitle>
+                <form onSubmit={handleSave}>
                 <DialogContent>
                     <Container sx={{ mb: 2, display:'flex', justifyContent:'center', alignItems:'center', gap: 4 }}>
-                        <Avatar src={localAvatar || ''} sx={{ width: 64, height: 64, mb: 2 }} onClick={() => setShowFullImage(true)}/>
+                        <Avatar src={avatar || ''} sx={{ width: 64, height: 64, mb: 2 }} onClick={() => setShowFullImage(true)}/>
                         <Button variant='contained' component='label' startIcon={<CloudUploadIcon />} sx={{ bgcolor:'#1E1E2F'}}>
                             Upload Avatar
                             <input type='file' hidden onChange={handleAvatarChange} accept='image/*' />
@@ -82,26 +74,27 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
                     <TextField
                         margin='normal'
                         label='Name'
-                        value={localName}
-                        onChange={(e) => setLocalName(e.target.value)}
+                        name='name'
+                        defaultValue={name ?? ''}
                         fullWidth
                     />
                     <TextField
                         margin='normal'
                         label='Email'
-                        value={localEmail}
-                        onChange={(e) => setLocalEmail(e.target.value)}
+                        name='email'
+                        defaultValue={email ?? ''}
                         fullWidth
                     />
                 </DialogContent>
                 <Container sx={{ display:'flex', justifyContent:'flex-end' }}>
                     <DialogActions>
-                        <Button onClick={handleSave} variant='contained' sx={{ bgcolor:'#1E1E2F'}}>Save</Button>
+                        <Button type='submit' variant='contained' sx={{ bgcolor:'#1E1E2F'}}>Save</Button>
                     </DialogActions>
                     <DialogActions>
                         <Button onClick={onClose} variant='contained' sx={{ bgcolor:'#1E1E2F'}}>Close</Button>
                     </DialogActions>
                 </Container>
+                </form>
             </Dialog>
             <Dialog open={showFullImage} onClose={() => setShowFullImage(false)}>
                 <DialogTitle
@@ -124,7 +117,7 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
                 </DialogTitle>
                 <DialogContent sx={{ textAlign: 'center' }}>
                     <img
-                        src={localAvatar || ''}
+                        src={avatar || ''}
                         alt='Full Avatar'
                         style={{ maxWidth: '100%', maxHeight: '70vh', borderRadius: '10px' }}
                     />
