@@ -34,7 +34,6 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
         const updatedName = formData.get('name')?.toString() || null;
         const updatedEmail = formData.get('email')?.toString() || null;
         const avatarFile  = formData.get('avatar');
-        console.log('avatarFile:', avatarFile);
         let updatedAvatar = avatar;
 
         if (avatarFile  instanceof File && avatarFile .type.startsWith('image/')) {
