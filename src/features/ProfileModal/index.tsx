@@ -28,33 +28,33 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
 
     const [showFullImage, setShowFullImage] = useState(false);
 
-    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                if (typeof reader.result === 'string') {
-                    dispatch(setUserData({ name, email, avatar: reader.result }));
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-    };
-
-    const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
         const updatedName = formData.get('name')?.toString() || null;
         const updatedEmail = formData.get('email')?.toString() || null;
-        dispatch(
-            setUserData({
-                name: updatedName,
-                email: updatedEmail,
-                avatar,
-            })
-        );
+        const avatarFile  = formData.get('avatar');
+        console.log('avatarFile:', avatarFile);
+        let updatedAvatar = avatar;
+
+        if (avatarFile  instanceof File && avatarFile .type.startsWith('image/')) {
+            updatedAvatar = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.addEventListener('load', () => {
+                    if (typeof reader.result === 'string') {
+                        resolve(reader.result);
+                    }
+                });
+                reader.readAsDataURL(avatarFile);
+            });
+        }
+
+        dispatch(setUserData({
+            name: updatedName,
+            email: updatedEmail,
+            avatar: updatedAvatar,
+        }));
+
         onClose();
     };
 
@@ -68,7 +68,7 @@ export const ProfileModal = ({ open, onClose }: ProfileModalProps) => {
                         <Avatar src={avatar || ''} sx={{ width: 64, height: 64, mb: 2 }} onClick={() => setShowFullImage(true)}/>
                         <Button variant='contained' component='label' startIcon={<CloudUploadIcon />} sx={{ bgcolor:'#1E1E2F'}}>
                             Upload Avatar
-                            <input type='file' hidden onChange={handleAvatarChange} accept='image/*' />
+                            <input type='file' name='avatar' hidden accept='image/*' />
                         </Button>
                     </Container>
                     <TextField

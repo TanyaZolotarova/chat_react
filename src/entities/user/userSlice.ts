@@ -23,11 +23,11 @@ const userSlice = createSlice({
             state.avatar = action.payload.avatar;
         },
         clearUserData: (state) => {
-        state.name = null;
-        state.email = null;
-        state.avatar = null;
+            state.name = null;
+            state.email = null;
+            state.avatar = null;
         }
-        },
+    },
 });
 
 export const { setUserData, clearUserData } = userSlice.actions;
