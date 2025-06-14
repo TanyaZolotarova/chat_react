@@ -21,7 +21,7 @@ export const ChatList = () => {
             </div>
             <SideBar onProfileClick={() => setIsProfileOpen(true)}/>
             <ProfileModal
-                open={isProfileOpen}
+                isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}
             />
             <main>

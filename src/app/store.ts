@@ -8,15 +8,8 @@ const preloadedState = (() => {
     try {
         const localData = localStorage.getItem(STORAGE_KEY);
         if (!localData) return undefined;
-
-        const parsed = JSON.parse(localData);
-        return {
-            auth: parsed.auth,
-            user: parsed.user,
-        };
     } catch (e) {
         console.warn('Error parsing localStorage:', e);
-        return undefined;
     }
 })();
 
@@ -33,8 +26,8 @@ export type AppDispatch = typeof store.dispatch;
 
 store.subscribe(() => {
     try {
-        const { auth, user } = store.getState();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ auth, user }));
+        const state = store.getState();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
         console.warn('Error saving to localStorage:', e);
     }
