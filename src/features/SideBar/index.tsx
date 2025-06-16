@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
 import { logout } from '../../entities/auth/authSlice.ts'
-import {clearUserData, selectUserAvatar} from '../../entities/user/userSlice.ts';
+import { clearUserData, selectUserAvatar } from '../../entities/user/userSlice.ts';
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
