@@ -13,8 +13,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { setUserData } from '../../entities/user/userSlice.ts';
-import { RootState } from '../../app/store.ts';
+import { setUserData, selectUserName, selectUserEmail, selectUserAvatar } from '../../entities/user/userSlice.ts';
 import { ALLOWED_IMAGE_TYPES } from '../../components/Utils/constants.ts';
 
 interface ProfileModalProps {
@@ -25,7 +24,9 @@ interface ProfileModalProps {
 export const ProfileModal = ({ isOpen, onClose }: ProfileModalProps) => {
     const dispatch = useDispatch();
 
-    const { name, email, avatar } = useSelector((state: RootState) => state.user);
+    const name = useSelector(selectUserName);
+    const email = useSelector(selectUserEmail);
+    const avatar = useSelector(selectUserAvatar);
 
     const [isFullImage, setIsFullImage] = useState(false);
 

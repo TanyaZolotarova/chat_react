@@ -13,9 +13,8 @@ import {
     ListItemText
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
-import { RootState } from '../../app/store.ts';
 import { logout } from '../../entities/auth/authSlice.ts'
-import { clearUserData } from '../../entities/user/userSlice.ts';
+import {clearUserData, selectUserAvatar} from '../../entities/user/userSlice.ts';
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
@@ -39,7 +38,7 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const avatar = useSelector((state: RootState) => state.user.avatar);
+    const avatar = useSelector(selectUserAvatar);
 
     const menuItems: MenuItem[] = useMemo(() => [
         { text: 'Profile', icon: <Person />, id: generateId(), onClick: onProfileClick },

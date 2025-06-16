@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { authenticateUser } from './authThunks.ts';
-import { RootState } from '../../app/store.ts';
 
 interface AuthState {
     authToken: string | null;
@@ -52,9 +51,9 @@ const authSlice = createSlice({
 });
 
 export const { logout, setTokens} = authSlice.actions;
-export const selectAuthToken = (state: RootState) => state.auth.authToken;
-export const selectRefreshToken = (state: RootState) => state.auth.refreshToken;
-export const selectAuthLoading = (state: RootState) => state.auth.loading;
-export const selectAuthError = (state: RootState) => state.auth.error;
-export const selectIsAuthenticated = (state: RootState) => !!state.auth.authToken;
+export const selectAuthToken = (state: { auth: AuthState }) => state.auth.authToken;
+export const selectRefreshToken = (state: { auth: AuthState }) => state.auth.refreshToken;
+export const selectAuthLoading = (state: { auth: AuthState }) => state.auth.loading;
+export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
+export const selectIsAuthenticated = (state: { auth: AuthState }) => !!state.auth.authToken;
 export default authSlice.reducer;

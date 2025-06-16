@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../app/store.ts';
 
 interface UserState {
     avatar: string | null;
@@ -31,8 +30,8 @@ const userSlice = createSlice({
 });
 
 export const { setUserData, clearUserData } = userSlice.actions;
-export const selectUser = (state: RootState) => state.user;
-export const selectUserName = (state: RootState) => state.user.name;
-export const selectUserEmail = (state: RootState) => state.user.email;
-export const selectUserAvatar = (state: RootState) => state.user.avatar;
+export const selectUser = (state: {user: UserState}) => state.user;
+export const selectUserName = (state: {user: UserState}) => state.user.name;
+export const selectUserEmail = (state: {user: UserState}) => state.user.email;
+export const selectUserAvatar = (state: {user: UserState}) => state.user.avatar;
 export default userSlice.reducer;

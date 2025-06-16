@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../entities/auth/authSlice.ts';
+import authReducer from '../entities/auth/authSlice';
 import userReducer from '../entities/user/userSlice';
 
 const STORAGE_KEY = 'app-state';
 
-const preloadedState = (() => {
+const preloadedState = ((): {auth: AuthState, user: UserState} | undefined => {
     try {
         const localData = localStorage.getItem(STORAGE_KEY);
-        if (!localData) return undefined;
+        return localData ? JSON.parse(localData) : undefined;
     } catch (e) {
         console.warn('Error parsing localStorage:', e);
     }
