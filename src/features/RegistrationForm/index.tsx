@@ -6,7 +6,7 @@ import { Checkbox, FormControlLabel, FormGroup, FormHelperText } from '@mui/mate
 import { TitleText } from '../../components/TitleText';
 import { TextInput } from '../../components/TextInput';
 import { SubmitBtn } from '../../components/SubmitBtn';
-import { registerUser } from '../../components/AuthApi'
+import { registerUser } from '../../components/AuthApi';
 
 const schema = z.object({
     name: z.string()
@@ -58,7 +58,9 @@ export const RegistrationForm = () => {
                 email: formData.email,
                 password: formData.password,
             };
-            const response = await registerUser(data);
+
+            await registerUser(data);
+
             reset();
         } catch (error) {
             console.error('Error submitting form:', error);
