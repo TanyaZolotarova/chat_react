@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { Archive, Group, Home, Logout, Person } from '@mui/icons-material';
 import { logout } from '../../entities/auth/authSlice.ts'
-import { clearUserData, selectUserAvatar } from '../../entities/user/userSlice.ts';
+import { clearUserData, selectUserAvatar } from '../../entities/user/userSlice';
 import { getIdGenerator } from '../../components/Utils';
 import './style.css';
 
@@ -42,7 +42,7 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
 
     const menuItems: MenuItem[] = useMemo(() => [
         { text: 'Profile', icon: <Person />, id: generateId(), onClick: onProfileClick },
-        { text: 'All chats', icon: <Home />, id: generateId(), onClick: () => navigate('/') },
+        { text: 'All chats', icon: <Home />, id: generateId(), onClick: () => navigate('/?tab=default') },
         { text: 'Archive chats', icon: <Archive />, id: generateId(), onClick: () => navigate('/?tab=archive') },
         { text: 'Contacts', icon: <Group />, id: generateId(), onClick: () => navigate('/?tab=contacts') },
         { text: 'Log out', icon: <Logout />, id: generateId(), onClick: () => {dispatch(logout()); dispatch(clearUserData());} },
@@ -54,8 +54,12 @@ export const SideBar = ({ onProfileClick }: SideBarProps) => {
                 <Avatar alt='User Avatar' src={avatar ?? ''} className='avatar'/>
                 <List>
                     {menuItems.map((item) => (
-                        <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
-                            <ListItemButton sx={{display: 'flex', flexDirection: 'column', color: '#fff'}}
+                        <ListItem key={item.id} sx={{ justifyContent: 'center', marginY: 1 }} disablePadding>
+                            <ListItemButton sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                color: '#fff',
+                            }}
                                             onClick={item.onClick}>
                                 <ListItemIcon sx={{color: '#fff', minWidth: 'auto'}}>
                                     <Badge color='error' overlap='circular'>
