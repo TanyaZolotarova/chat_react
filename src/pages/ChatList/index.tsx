@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { SideBar } from '../../features/SideBar';
 import { ProfileModal } from '../../features/ProfileModal';
-import { Tabs } from '../../features/Tabs';
+import { ChatListPanel } from '../../features/ChatListPanel';
 import { Box } from '@mui/material';
 
 export const ChatList = () => {
@@ -13,7 +13,7 @@ export const ChatList = () => {
     return(
         <Box style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
             <SideBar onProfileClick={() => setIsProfileOpen(true)}/>
-            <Tabs tab={tab} />
+            <ChatListPanel tab={tab} />
             <ProfileModal
                 isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}

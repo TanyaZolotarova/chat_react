@@ -15,10 +15,10 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { MockData } from '../../components/Utils/mockData.ts';
+import { Contacts } from '../../../components/Utils/mockData.ts';
 
 interface TabProps {
-    data: MockData[];
+    data: Contacts[];
     placeholder: string;
     emptyText: string;
     showAddButton?: boolean;
@@ -85,7 +85,7 @@ export const ItemTab = ({ data, placeholder, emptyText, showAddButton = false, s
                         disablePadding
                         secondaryAction={
                             <IconButton
-                                edge="end"
+                                edge='end'
                                 onClick={e => {
                                     e.stopPropagation();
                                     onClickDelete(item.id);

@@ -1,11 +1,11 @@
-export interface MockData {
+export interface Contacts {
     id: number;
     name: string;
     status: string;
     avatar: string;
 }
 
-export const mockData: MockData[] = [
+export const mockItems: Contacts[] = [
     { id: 1, name: 'Sansa Stark', status: 'online', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' },
     { id: 2, name: 'Arya Stark', status: 'last seen just now', avatar: 'https://randomuser.me/api/portraits/women/2.jpg' },
     { id: 4, name: 'Bran Stark', status: 'online', avatar: 'https://randomuser.me/api/portraits/men/1.jpg' },

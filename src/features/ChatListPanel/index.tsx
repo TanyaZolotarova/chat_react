@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import { ItemTab } from '../ItemTab';
-import { MockData, mockData } from '../../components/Utils/mockData.ts';
+import { ItemTab } from './ItemTab';
+import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
 
 interface TabsProps {
     tab: string;
@@ -11,7 +11,7 @@ const tabConfig: Record<string, {
     placeholder: string;
     emptyText: string;
     showAddButton?: boolean;
-    filter: (data: MockData[]) => MockData[];
+    filter: (data: Contacts[]) => Contacts[];
     onDelete?: (id: number) => void;
 }> = {
     contacts: {
@@ -37,8 +37,8 @@ const tabConfig: Record<string, {
     },
 };
 
-export const Tabs = ({ tab }: TabsProps) => {
-    const [allItems, setAllItems] = useState<MockData[]>(mockData);
+export const ChatListPanel = ({ tab }: TabsProps) => {
+    const [allItems, setAllItems] = useState<Contacts[]>(mockItems);
 
     const config = tabConfig[tab] ?? tabConfig['all'];
     const filteredData = config.filter(allItems);
