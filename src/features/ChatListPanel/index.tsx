@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import { ItemTab } from './ItemTab';
+import { ContactList } from './ContactList';
 import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
 
-interface TabsProps {
+interface ChatListPanelProps {
     tab: string;
 }
 
@@ -37,11 +37,11 @@ const tabConfig: Record<string, {
     },
 };
 
-export const ChatListPanel = ({ tab }: TabsProps) => {
-    const [allItems, setAllItems] = useState<Contacts[]>(mockItems);
+export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
+    const [allContacts, setAllContacts] = useState<Contacts[]>(mockItems);
 
     const config = tabConfig[tab] ?? tabConfig['all'];
-    const filteredData = config.filter(allItems);
+    const filteredContacts = config.filter(allContacts);
 
     return (
         <Box
@@ -58,12 +58,12 @@ export const ChatListPanel = ({ tab }: TabsProps) => {
                 flexDirection: 'column',
             }}
         >
-            <ItemTab
-                data={filteredData}
+            <ContactList
+                contactItems={filteredContacts}
                 placeholder={config.placeholder}
                 emptyText={config.emptyText}
                 showAddButton={config.showAddButton}
-                onDelete={(id) => setAllItems(prev => prev.filter(item => item.id !== id))}
+                onDelete={(id) => setAllContacts(prev => prev.filter(item => item.id !== id))}
             />
         </Box>
     );

@@ -17,8 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { Contacts } from '../../../components/Utils/mockData.ts';
 
-interface TabProps {
-    data: Contacts[];
+interface ContactListOptions {
+    contactItems: Contacts[];
     placeholder: string;
     emptyText: string;
     showAddButton?: boolean;
@@ -26,12 +26,12 @@ interface TabProps {
     onDelete?: (id: number) => void;
 }
 
-export const ItemTab = ({ data, placeholder, emptyText, showAddButton = false, showSelection = true, onDelete }: TabProps) => {
-    const [selectedId, setSelectedId] = useState<number | null>(data[0]?.id ?? null);
-    const [searchItems, setSearchItems] = useState('');
+export const ContactList = ({ contactItems, placeholder, emptyText, showAddButton = false, showSelection = true, onDelete }: ContactListOptions) => {
+    const [selectedId, setSelectedId] = useState<number | null>(contactItems[0]?.id ?? null);
+    const [searchContact, setSearchContact] = useState('');
 
-    const filteredItems = useMemo(() =>
-            data.filter(item => item.name.toLowerCase().includes(searchItems.toLowerCase())), [searchItems, data]);
+    const filteredContacts = useMemo(() =>
+        contactItems.filter(contact => contact.name.toLowerCase().includes(searchContact.toLowerCase())), [searchContact, contactItems]);
 
     const onClickDelete = (id: number) => {
         onDelete?.(id);
@@ -58,8 +58,8 @@ export const ItemTab = ({ data, placeholder, emptyText, showAddButton = false, s
                     <SearchIcon sx={{ color: '#868686' }} />
                     <InputBase
                         placeholder={placeholder}
-                        value={searchItems}
-                        onChange={e => setSearchItems(e.target.value)}
+                        value={searchContact}
+                        onChange={e => setSearchContact(e.target.value)}
                         sx={{ ml: 1, flex: 1, fontSize: 16 }}
                     />
                 </Paper>
@@ -74,12 +74,12 @@ export const ItemTab = ({ data, placeholder, emptyText, showAddButton = false, s
             </Box>
 
             <List sx={{ flex: 1, overflowY: 'auto', pt: 1 }}>
-                {filteredItems.length === 0 && (
+                {filteredContacts.length === 0 && (
                     <Typography sx={{ mt: 3, color: '#868686', textAlign: 'center' }}>
                         {emptyText}
                     </Typography>
                 )}
-                {filteredItems.map(item => (
+                {filteredContacts.map(item => (
                     <ListItem
                         key={item.id}
                         disablePadding
