@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import { ContactList } from './ContactList';
+import { ContactList } from '../../entities/ContactList';
 import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
 
 interface ChatListPanelProps {

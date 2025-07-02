@@ -15,7 +15,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { Contacts } from '../../../components/Utils/mockData.ts';
+import { Contacts } from '../../components/Utils/mockData.ts';
 
 interface ContactListOptions {
     contactItems: Contacts[];
