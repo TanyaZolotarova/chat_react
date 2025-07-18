@@ -8,11 +8,11 @@ import { Box } from '@mui/material';
 export const ChatList = () => {
     const [searchParams] = useSearchParams();
     const [isProfileOpen , setIsProfileOpen ] = useState(false);
-    const tab = searchParams.get('tab') || 'default';
+    const tab = searchParams.get('tab') || 'all';
 
     return(
         <Box style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-            <SideBar onProfileClick={() => setIsProfileOpen(true)}/>
+            <SideBar tab={tab} onProfileClick={() => setIsProfileOpen(true)}/>
             <ChatListPanel tab={tab} />
             <ProfileModal
                 isOpen={isProfileOpen}

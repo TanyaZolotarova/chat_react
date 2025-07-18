@@ -10,35 +10,87 @@ import {
     ListItemText,
     ListItemButton,
     Paper,
-    Typography
+    Typography,
+    Menu,
+    MenuItem, Button,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import DeleteIcon from '@mui/icons-material/Delete';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { Contacts } from '../../components/Utils/mockData.ts';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
 
 interface ContactListOptions {
     contactItems: Contacts[];
     placeholder: string;
     emptyText: string;
+    filter: (items: Contacts[]) => Contacts[];
     showAddButton?: boolean;
     showSelection?: boolean;
     onDelete?: (id: number) => void;
 }
 
-export const ContactList = ({ contactItems, placeholder, emptyText, showAddButton = false, showSelection = true, onDelete }: ContactListOptions) => {
+export const ContactList = ({contactItems, placeholder, emptyText, filter, showSelection = true, onDelete}: ContactListOptions) => {
     const [selectedId, setSelectedId] = useState<number | null>(contactItems[0]?.id ?? null);
     const [searchContact, setSearchContact] = useState('');
+    const [allContacts, setAllContacts] = useState<Contacts[]>(contactItems);
 
     const filteredContacts = useMemo(() =>
-        contactItems.filter(contact => contact.name.toLowerCase().includes(searchContact.toLowerCase())), [searchContact, contactItems]);
+        filter(
+            allContacts.filter(contact =>
+                contact.name.toLowerCase().includes(searchContact.toLowerCase())
+            )
+        ), [searchContact, allContacts, filter]);
 
-    const onClickDelete = (id: number) => {
-        onDelete?.(id);
-        if (selectedId === id) setSelectedId(null);
+    const matchedFromMock = useMemo(() =>
+        mockItems.find(
+            contact =>
+                contact.name.toLowerCase().includes(searchContact.toLowerCase()) &&
+                !allContacts.some(ac => ac.id === contact.id)
+        ), [searchContact, allContacts]);
+
+    const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+    const [menuContactId, setMenuContactId] = useState<number | null>(null);
+    const openMenu = Boolean(menuAnchorEl);
+
+    const onClickMenu = (event: React.MouseEvent<HTMLButtonElement>, contactId: number) => {
+        setMenuAnchorEl(event.currentTarget);
+        setMenuContactId(contactId);
     };
 
-    return(
+    const closeMenu = () => {
+        setMenuAnchorEl(null);
+        setMenuContactId(null);
+    };
+
+    const onClickDelete = () => {
+        if (menuContactId !== null) {
+            onDelete?.(menuContactId);
+            setAllContacts(prev => prev.filter(item => item.id !== menuContactId));
+            if (selectedId === menuContactId) setSelectedId(null);
+        }
+        closeMenu();
+    };
+
+    const addArchive = () => {
+        console.log(`Archive contact with id: ${menuContactId}`);
+        closeMenu();
+    };
+
+    const addContactFromMock = () => {
+        if (matchedFromMock) {
+            const contact: Contacts = {
+                ...matchedFromMock,
+                status: matchedFromMock.status || 'online'
+            };
+            setAllContacts(prev => [...prev, contact]);
+            setSearchContact('');
+        }
+    };
+
+    const found = filteredContacts.length > 0;
+
+    return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box sx={{
                 position: 'sticky',
@@ -63,22 +115,30 @@ export const ContactList = ({ contactItems, placeholder, emptyText, showAddButto
                         sx={{ ml: 1, flex: 1, fontSize: 16 }}
                     />
                 </Paper>
-                {showAddButton && (
-                    <IconButton sx={{
-                        ml: 1, bgcolor: '#2a2931', color: '#fff',
-                        '&:hover': { bgcolor: '#1e1e2f' }
-                    }}>
-                        <PersonAddIcon />
-                    </IconButton>
-                )}
             </Box>
 
             <List sx={{ flex: 1, overflowY: 'auto', pt: 1 }}>
-                {filteredContacts.length === 0 && (
+                {!found && searchContact.trim() && matchedFromMock && (
+                    <Box sx={{  mt: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, px: 4 }}>
+                        <Box display='flex' justifyContent='center' alignItems='center' gap={1} mb={1}>
+                            <Avatar src={matchedFromMock.avatar} alt={matchedFromMock.name} />
+                            <Typography fontWeight={500}>{matchedFromMock.name}</Typography>
+                        </Box>
+                        <Button
+                            onClick={addContactFromMock}
+                            sx={{ bgcolor: '#2a2931', color: '#fff', '&:hover': { bgcolor: '#1e1e2f' } }}
+                        >
+                            <PersonAddIcon />
+                        </Button>
+                    </Box>
+                )}
+
+                {!found && searchContact.trim() && !matchedFromMock && (
                     <Typography sx={{ mt: 3, color: '#868686', textAlign: 'center' }}>
                         {emptyText}
                     </Typography>
                 )}
+
                 {filteredContacts.map(item => (
                     <ListItem
                         key={item.id}
@@ -88,10 +148,10 @@ export const ContactList = ({ contactItems, placeholder, emptyText, showAddButto
                                 edge='end'
                                 onClick={e => {
                                     e.stopPropagation();
-                                    onClickDelete(item.id);
+                                    onClickMenu(e, item.id);
                                 }}
                             >
-                                <DeleteIcon sx={{ color: '#2a2931' }} />
+                                <MoreVertIcon sx={{ color: '#2a2931' }} />
                             </IconButton>
                         }
                         sx={{
@@ -138,6 +198,11 @@ export const ContactList = ({ contactItems, placeholder, emptyText, showAddButto
                     </ListItem>
                 ))}
             </List>
+
+            <Menu anchorEl={menuAnchorEl} open={openMenu} onClose={closeMenu}>
+                <MenuItem onClick={onClickDelete}>Delete</MenuItem>
+                <MenuItem onClick={addArchive}>Archiving</MenuItem>
+            </Menu>
         </Box>
     );
-}
+};

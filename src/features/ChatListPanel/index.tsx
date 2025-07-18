@@ -41,7 +41,6 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
     const [allContacts, setAllContacts] = useState<Contacts[]>(mockItems);
 
     const config = tabConfig[tab] ?? tabConfig['all'];
-    const filteredContacts = config.filter(allContacts);
 
     return (
         <Box
@@ -59,7 +58,8 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
             }}
         >
             <ContactList
-                contactItems={filteredContacts}
+                contactItems={allContacts}
+                filter={config.filter}
                 placeholder={config.placeholder}
                 emptyText={config.emptyText}
                 showAddButton={config.showAddButton}
