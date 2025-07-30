@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useMemo, useState} from 'react';
 import { Box } from '@mui/material';
 import { ContactList } from '../../entities/ContactList';
 import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
@@ -39,8 +39,39 @@ const tabConfig: Record<string, {
 
 export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
     const [allContacts, setAllContacts] = useState<Contacts[]>(mockItems);
+    const [searchText, setSearchText] = useState('');
 
     const config = tabConfig[tab] ?? tabConfig['all'];
+
+    const filteredContacts = useMemo(() =>
+        config.filter(
+            allContacts.filter(contact =>
+                contact.name.toLowerCase().includes(searchText.toLowerCase())
+            )
+        ), [searchText, allContacts, config.filter]
+    );
+
+    const matchedFromMock = useMemo(() =>
+        mockItems.find(
+            contact =>
+                contact.name.toLowerCase().includes(searchText.toLowerCase()) &&
+                !allContacts.some(ac => ac.id === contact.id)
+        ), [searchText, allContacts]);
+
+    const searchingText = (text: string) => {
+        setSearchText(text);
+    };
+
+    const deleteContact = (id: number) => {
+        setAllContacts(prev => prev.filter(item => item.id !== id));
+    };
+
+    const addContactFromMock = () => {
+        if (matchedFromMock) {
+            setAllContacts(prev => [...prev, { ...matchedFromMock, status: 'online' }]);
+            setSearchText('');
+        }
+    };
 
     return (
         <Box
@@ -58,12 +89,15 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
             }}
         >
             <ContactList
-                contactItems={allContacts}
-                filter={config.filter}
+                contactItems={filteredContacts}
                 placeholder={config.placeholder}
                 emptyText={config.emptyText}
                 showAddButton={config.showAddButton}
-                onDelete={(id) => setAllContacts(prev => prev.filter(item => item.id !== id))}
+                searchText={searchText}
+                onSearch={searchingText}
+                matchedMockContact={matchedFromMock}
+                onAddFromMock={addContactFromMock}
+                onDelete={deleteContact}
             />
         </Box>
     );
