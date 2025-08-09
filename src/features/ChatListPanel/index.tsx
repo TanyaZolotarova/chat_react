@@ -1,7 +1,7 @@
 import {useMemo, useState} from 'react';
 import { Box } from '@mui/material';
 import { ContactList } from '../../entities/ContactList';
-import { Contacts, mockItems } from '../../components/Utils/mockData.ts';
+import { Contact, mockItems } from '../../components/Utils/mockData.ts';
 
 interface ChatListPanelProps {
     tab: string;
@@ -11,7 +11,7 @@ const tabConfig: Record<string, {
     placeholder: string;
     emptyText: string;
     showAddButton?: boolean;
-    filter: (data: Contacts[]) => Contacts[];
+    filter: (data: Contact[]) => Contact[];
     onDelete?: (id: number) => void;
 }> = {
     contacts: {
@@ -38,25 +38,36 @@ const tabConfig: Record<string, {
 };
 
 export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
-    const [allContacts, setAllContacts] = useState<Contacts[]>(mockItems);
+    const [allContacts, setAllContacts] = useState<Contact[]>(mockItems);
     const [searchText, setSearchText] = useState('');
+    const [deletedIds, setDeletedIds] = useState<number[]>([]);
 
     const config = tabConfig[tab] ?? tabConfig['all'];
 
-    const filteredContacts = useMemo(() =>
-        config.filter(
-            allContacts.filter(contact =>
-                contact.name.toLowerCase().includes(searchText.toLowerCase())
-            )
-        ), [searchText, allContacts, config.filter]
-    );
+    const contactItemsForList = useMemo(() => {
+        const lowerSearch = searchText.trim().toLowerCase();
+        const isSearching = lowerSearch.length > 0;
 
-    const matchedFromMock = useMemo(() =>
-        mockItems.find(
+        const baseFiltered = config.filter(
+            allContacts
+                .filter(contact =>
+                    contact.name.toLowerCase().includes(lowerSearch)
+                )
+                .filter(contact => !deletedIds.includes(contact.id))
+        );
+
+        const candidate = mockItems.find(
             contact =>
-                contact.name.toLowerCase().includes(searchText.toLowerCase()) &&
+                contact.name.toLowerCase().includes(lowerSearch) &&
                 !allContacts.some(ac => ac.id === contact.id)
-        ), [searchText, allContacts]);
+        );
+
+        if (candidate && isSearching) {
+            return [{ ...candidate, isPendingAddition: true }, ...baseFiltered];
+        }
+
+        return baseFiltered;
+    }, [searchText, allContacts, config, deletedIds]);
 
     const searchingText = (text: string) => {
         setSearchText(text);
@@ -64,11 +75,17 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
 
     const deleteContact = (id: number) => {
         setAllContacts(prev => prev.filter(item => item.id !== id));
+        setDeletedIds(prev => [...prev, id]);
     };
 
-    const addContactFromMock = () => {
-        if (matchedFromMock) {
-            setAllContacts(prev => [...prev, { ...matchedFromMock, status: 'online' }]);
+    const addContact = () => {
+        const pending = contactItemsForList.find((contact) => contact.isPendingAddition);
+        if (pending) {
+            setAllContacts((prev) => [
+                ...prev,
+                { ...pending, isPendingAddition: undefined },
+            ]);
+            setDeletedIds(prev => prev.filter(id => id !== pending.id));
             setSearchText('');
         }
     };
@@ -89,14 +106,13 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
             }}
         >
             <ContactList
-                contactItems={filteredContacts}
+                contactItems={contactItemsForList}
                 placeholder={config.placeholder}
                 emptyText={config.emptyText}
                 showAddButton={config.showAddButton}
                 searchText={searchText}
                 onSearch={searchingText}
-                matchedMockContact={matchedFromMock}
-                onAddFromMock={addContactFromMock}
+                onAddContact={addContact}
                 onDelete={deleteContact}
             />
         </Box>

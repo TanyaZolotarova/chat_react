@@ -17,37 +17,25 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-import { Contacts } from '../../components/Utils/mockData.ts';
+import { Contact } from '../../components/Utils/mockData.ts';
 
 interface ContactListOptions {
-    contactItems: Contacts[];
+    contactItems: Contact[];
     placeholder: string;
     emptyText: string;
     searchText: string;
     onSearch: (text: string) => void;
     showAddButton?: boolean;
     showSelection?: boolean;
-    matchedMockContact?: Contacts;
-    onAddFromMock?: () => void;
+    onAddContact?: () => void;
     onDelete?: (id: number) => void;
 }
 
-export const ContactList = ({
-                                contactItems,
-                                placeholder,
-                                emptyText,
-                                searchText,
-                                onSearch,
-                                showSelection = true,
-                                matchedMockContact,
-                                onAddFromMock,
-                                onDelete
-}: ContactListOptions) => {
+export const ContactList = ({ contactItems, placeholder, emptyText, searchText, onSearch, showSelection = true, onAddContact, onDelete }: ContactListOptions) => {
     const [selectedId, setSelectedId] = useState<number | null>(contactItems[0]?.id ?? null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [menuContactId, setMenuContactId] = useState<number | null>(null);
-    const openMenu = Boolean(menuAnchorEl);
+    const isMenuOpen = Boolean(menuAnchorEl);
 
     const openContextMenu = (event: React.MouseEvent<HTMLButtonElement>, contactId: number) => {
         setMenuAnchorEl(event.currentTarget);
@@ -61,7 +49,6 @@ export const ContactList = ({
 
     const deleteContact = (id: number) => {
         onDelete?.(id);
-        if (selectedId === id) setSelectedId(null);
         closeMenu();
     };
 
@@ -69,6 +56,9 @@ export const ContactList = ({
         console.log(`Archive contact with id: ${menuContactId}`);
         closeMenu();
     };
+
+    const pendingContact = contactItems.find(contact => contact.isPendingAddition);
+    const displayContacts = contactItems.filter(contact => !contact.isPendingAddition);
 
     return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -84,8 +74,12 @@ export const ContactList = ({
                 gap: 1,
             }}>
                 <Paper sx={{
-                    flex: 1, display: 'flex', alignItems: 'center',
-                    borderRadius: '24px', px: 2, background: '#f7f7f8'
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderRadius: '24px',
+                    px: 2,
+                    background: '#f7f7f8'
                 }}>
                     <SearchIcon sx={{ color: '#868686' }} />
                     <InputBase
@@ -98,14 +92,14 @@ export const ContactList = ({
             </Box>
 
             <List sx={{ flex: 1, overflowY: 'auto', pt: 1 }}>
-                {!contactItems.length && searchText.trim() && matchedMockContact && (
+                {pendingContact && (
                     <Box sx={{  mt: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, px: 4 }}>
                         <Box display='flex' justifyContent='center' alignItems='center' gap={1} mb={1}>
-                            <Avatar src={matchedMockContact.avatar} alt={matchedMockContact.name} />
-                            <Typography fontWeight={500}>{matchedMockContact.name}</Typography>
+                            <Avatar src={pendingContact.avatar} alt={pendingContact.name} />
+                            <Typography fontWeight={500}>{pendingContact.name}</Typography>
                         </Box>
                         <Button
-                            onClick={onAddFromMock}
+                            onClick={onAddContact}
                             sx={{ bgcolor: '#2a2931', color: '#fff', '&:hover': { bgcolor: '#1e1e2f' } }}
                         >
                             <PersonAddIcon />
@@ -113,13 +107,13 @@ export const ContactList = ({
                     </Box>
                 )}
 
-                {!contactItems.length && searchText.trim() && !matchedMockContact && (
+                {!contactItems.length && searchText.trim() && (
                     <Typography sx={{ mt: 3, color: '#868686', textAlign: 'center' }}>
                         {emptyText}
                     </Typography>
                 )}
 
-                {contactItems.map(item => (
+                {displayContacts.map(item => (
                     <ListItem
                         key={item.id}
                         disablePadding
@@ -179,7 +173,7 @@ export const ContactList = ({
                 ))}
             </List>
 
-            <Menu anchorEl={menuAnchorEl} open={openMenu} onClose={closeMenu}>
+            <Menu anchorEl={menuAnchorEl} open={isMenuOpen} onClose={closeMenu}>
                 <MenuItem onClick={() => menuContactId !== null && deleteContact(menuContactId)}>Delete</MenuItem>
                 <MenuItem onClick={archiveContact}>Archiving</MenuItem>
             </Menu>

@@ -26,6 +26,7 @@ interface MenuItem {
     action?: string;
     link?: string;
     badge?: number;
+    active: boolean;
 }
 
 interface SideBarProps {
@@ -42,19 +43,12 @@ export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
     const avatar = useSelector(selectUserAvatar);
 
     const menuItems: MenuItem[] = useMemo(() => [
-        {text: 'Profile', icon: <Person/>, id: generateId(), onClick: onProfileClick},
-        {text: 'All chats', icon: <Home/>, id: generateId(), onClick: () => navigate('/?tab=all')},
-        {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: () => navigate('/?tab=archive')},
-        {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: () => navigate('/?tab=contacts')},
-        {text: 'Log out', icon: <Logout/>, id: generateId(), onClick: () => {dispatch(logout());dispatch(clearUserData());}},
-    ], [onProfileClick, navigate, dispatch]);
-
-    const isActiveTab = (text: string): boolean => {
-        if (text === 'All chats' && tab === 'all') return true;
-        if (text === 'Archive chats' && tab === 'archive') return true;
-        if (text === 'Contacts' && tab === 'contacts') return true;
-        return false;
-    };
+            {text: 'Profile', icon: <Person/>, id: generateId(), onClick: onProfileClick, active: false,},
+            {text: 'All chats', icon: <Home/>, id: generateId(), onClick: () => navigate('/?tab=all'), active: tab === 'all',},
+            {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: () => navigate('/?tab=archive'), active: tab === 'archive',},
+            {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: () => navigate('/?tab=contacts'), active: tab === 'contacts',},
+            {text: 'Log out', icon: <Logout/>, id: generateId(), onClick: () => {dispatch(logout());dispatch(clearUserData());}, active: false,},
+        ], [tab, onProfileClick, navigate, dispatch]);
 
     return (
         <Drawer variant='permanent' className='sidebar'>
@@ -62,7 +56,6 @@ export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
                 <Avatar alt='User Avatar' src={avatar ?? ''} className='avatar'/>
                 <List>
                     {menuItems.map((item) => {
-                        const isActive = isActiveTab(item.text);
 
                         return (
                             <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
@@ -71,7 +64,7 @@ export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
                                         display: 'flex',
                                         flexDirection: 'column',
                                         color: '#fff',
-                                        backgroundColor: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                                        backgroundColor: item.active ? 'rgba(255,255,255,0.1)' : 'transparent',
                                         borderRadius: 0,
                                         '&:hover': {
                                             backgroundColor: 'rgba(255,255,255,0.1)',
