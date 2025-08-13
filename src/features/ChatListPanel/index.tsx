@@ -49,11 +49,10 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
         const isSearching = lowerSearch.length > 0;
 
         const baseFiltered = config.filter(
-            allContacts
-                .filter(contact =>
-                    contact.name.toLowerCase().includes(lowerSearch)
-                )
-                .filter(contact => !deletedIds.includes(contact.id))
+            allContacts.filter(contact =>
+                contact.name.toLowerCase().includes(lowerSearch) &&
+                !deletedIds.includes(contact.id)
+            )
         );
 
         const candidate = mockItems.find(

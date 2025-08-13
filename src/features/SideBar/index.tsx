@@ -36,18 +36,18 @@ interface SideBarProps {
 
 const generateId = getIdGenerator();
 
-export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
+export const SideBar = ({ tab, onProfileClick }: SideBarProps) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const avatar = useSelector(selectUserAvatar);
 
     const menuItems: MenuItem[] = useMemo(() => [
-            {text: 'Profile', icon: <Person/>, id: generateId(), onClick: onProfileClick, active: false,},
-            {text: 'All chats', icon: <Home/>, id: generateId(), onClick: () => navigate('/?tab=all'), active: tab === 'all',},
-            {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: () => navigate('/?tab=archive'), active: tab === 'archive',},
-            {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: () => navigate('/?tab=contacts'), active: tab === 'contacts',},
-            {text: 'Log out', icon: <Logout/>, id: generateId(), onClick: () => {dispatch(logout());dispatch(clearUserData());}, active: false,},
+            {text: 'Profile', icon: <Person/>, id: generateId(), onClick: onProfileClick, active: false},
+            {text: 'All chats', icon: <Home/>, id: generateId(), onClick: () => navigate('/?tab=all'), active: tab === 'all'},
+            {text: 'Archive chats', icon: <Archive/>, id: generateId(), onClick: () => navigate('/?tab=archive'), active: tab === 'archive'},
+            {text: 'Contacts', icon: <Group/>, id: generateId(), onClick: () => navigate('/?tab=contacts'), active: tab === 'contacts'},
+            {text: 'Log out', icon: <Logout/>, id: generateId(), onClick: () => {dispatch(logout());dispatch(clearUserData());}, active: false},
         ], [tab, onProfileClick, navigate, dispatch]);
 
     return (
@@ -55,9 +55,7 @@ export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
             <Box className='wrapper'>
                 <Avatar alt='User Avatar' src={avatar ?? ''} className='avatar'/>
                 <List>
-                    {menuItems.map((item) => {
-
-                        return (
+                    {menuItems.map((item) =>
                             <ListItem key={item.id} sx={{justifyContent: 'center', marginY: 1}} disablePadding>
                                 <ListItemButton
                                     sx={{
@@ -87,8 +85,7 @@ export const SideBar = ({tab, onProfileClick}: SideBarProps) => {
                                     />
                                 </ListItemButton>
                             </ListItem>
-                        );
-                    })}
+                    )}
                 </List>
             </Box>
         </Drawer>
