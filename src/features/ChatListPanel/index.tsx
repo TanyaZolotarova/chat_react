@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import { useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { ContactList } from '../../entities/ContactList';
 import { Contact, mockItems } from '../../components/Utils/mockData.ts';
@@ -26,14 +26,12 @@ const tabConfig: Record<string, {
     archive: {
         placeholder: 'Search archived chats',
         emptyText: 'No archived chats found',
-        filter: (data) =>
-            data.filter(item => item.status.toLowerCase() === 'archived'),
+        filter: (data) => data.filter(item => item.isArchived),
     },
     all: {
         placeholder: 'Search chats',
         emptyText: 'No chats found',
-        filter: (data) =>
-            data.filter(item => item.status.toLowerCase() !== 'archived'),
+        filter: (data) => data.filter(item => !item.isArchived),
     },
 };
 
@@ -77,6 +75,11 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
         setDeletedIds(prev => [...prev, id]);
     };
 
+    const archiveContact = (id: number) => {
+        setAllContacts(prev =>
+            prev.map(contact => contact.id === id ? { ...contact, isArchived: true, status: 'Archived' } : contact));
+    };
+
     const addContact = () => {
         const pending = contactItemsForList.find((contact) => contact.isPendingAddition);
         if (pending) {
@@ -113,6 +116,7 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
                 onSearch={searchingText}
                 onAddContact={addContact}
                 onDelete={deleteContact}
+                onArchive={archiveContact}
             />
         </Box>
     );

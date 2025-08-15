@@ -29,9 +29,10 @@ interface ContactListOptions {
     showSelection?: boolean;
     onAddContact?: () => void;
     onDelete?: (id: number) => void;
+    onArchive?: (id: number) => void;
 }
 
-export const ContactList = ({ contactItems, placeholder, emptyText, searchText, onSearch, showSelection = true, onAddContact, onDelete }: ContactListOptions) => {
+export const ContactList = ({ contactItems, placeholder, emptyText, searchText, onSearch, showSelection = true, onAddContact, onDelete, onArchive }: ContactListOptions) => {
     const [selectedId, setSelectedId] = useState<number | null>(contactItems[0]?.id ?? null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [menuContactId, setMenuContactId] = useState<number | null>(null);
@@ -53,7 +54,9 @@ export const ContactList = ({ contactItems, placeholder, emptyText, searchText, 
     };
 
     const archiveContact = () => {
-        console.log(`Archive contact with id: ${menuContactId}`);
+        if (menuContactId !== null) {
+            onArchive?.(menuContactId);
+        }
         closeMenu();
     };
 
