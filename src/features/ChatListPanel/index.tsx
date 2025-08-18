@@ -20,7 +20,7 @@ const tabConfig: Record<string, {
         showAddButton: true,
         filter: (data) =>
             data.filter(item =>
-                item.status === 'online' || item.status.startsWith('last seen')
+                (item.status === 'online' || item.status.startsWith('last seen')) && !item.isArchived
             ),
     },
     archive: {
@@ -77,7 +77,7 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
 
     const archiveContact = (id: number) => {
         setAllContacts(prev =>
-            prev.map(contact => contact.id === id ? { ...contact, isArchived: true, status: 'Archived' } : contact));
+            prev.map(contact => contact.id === id ? { ...contact, isArchived: !contact.isArchived } : contact));
     };
 
     const addContact = () => {

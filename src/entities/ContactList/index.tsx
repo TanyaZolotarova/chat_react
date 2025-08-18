@@ -62,6 +62,8 @@ export const ContactList = ({ contactItems, placeholder, emptyText, searchText, 
 
     const pendingContact = contactItems.find(contact => contact.isPendingAddition);
     const displayContacts = contactItems.filter(contact => !contact.isPendingAddition);
+    const selectedContact = menuContactId !== null ? contactItems.find(c => c.id === menuContactId) : null;
+    const isArchived = selectedContact?.isArchived;
 
     return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -166,8 +168,8 @@ export const ContactList = ({ contactItems, placeholder, emptyText, searchText, 
                             <ListItemText
                                 primary={<Typography fontWeight={500} fontSize={14}>{item.name}</Typography>}
                                 secondary={
-                                    <Typography fontSize={13} color={item.status === 'online' ? '#3fc86b' : '#868686'}>
-                                        {item.status}
+                                    <Typography fontSize={13} color={item.isArchived ? '#868686' : item.status === 'online' ? '#3fc86b' : '#868686'}>
+                                        {item.isArchived ? 'Archived' : item.status}
                                     </Typography>
                                 }
                             />
@@ -178,7 +180,9 @@ export const ContactList = ({ contactItems, placeholder, emptyText, searchText, 
 
             <Menu anchorEl={menuAnchorEl} open={isMenuOpen} onClose={closeMenu}>
                 <MenuItem onClick={() => menuContactId !== null && deleteContact(menuContactId)}>Delete</MenuItem>
-                <MenuItem onClick={archiveContact}>Archiving</MenuItem>
+                {selectedContact && (
+                    <MenuItem onClick={archiveContact}>{isArchived ? 'Unarchive' : 'Archive'}</MenuItem>
+                )}
             </Menu>
         </Box>
     );
