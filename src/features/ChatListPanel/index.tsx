@@ -100,7 +100,6 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
                 background: '#f7f7fb',
                 marginLeft: '80px',
                 borderRight: '1px solid #e5e5ef',
-                boxShadow: '5px 5px 5px 0px rgba(0,0,0,0.3)',
                 boxSizing: 'border-box',
                 p: 0,
                 display: 'flex',
