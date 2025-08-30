@@ -23,14 +23,14 @@ export const ChatList = () => {
                 '&::-webkit-scrollbar': {
                     display: 'none',
                 }}}>
-                <ChatListPanel tab={tab} />
+                <ChatListPanel tab={tab}/>
             </Box>
             <ProfileModal
                 isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}
             />
             <Box component='main' sx={{flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', height: '100vh'}}>
-                <ChatWindow />
+                <ChatWindow/>
             </Box>
         </Box>
     )

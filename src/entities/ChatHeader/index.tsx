@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Avatar, Badge, Box, IconButton, Modal, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Modal, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { IconBtn } from '../../components/IconBtn';
 
 interface ChatHeaderProps {
     name: string;
@@ -66,9 +67,9 @@ export const ChatHeader = ({ name, status, avatar }: ChatHeaderProps) => {
                     }}
                 >
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <IconButton onClick={() => setIsAvatarOpen(false)}>
+                        <IconBtn onClick={() => setIsAvatarOpen(false)}>
                             <CloseIcon />
-                        </IconButton>
+                        </IconBtn>
                     </Box>
                     <Avatar
                         src={avatar}

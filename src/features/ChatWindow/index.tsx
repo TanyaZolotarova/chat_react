@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { ChatHeader } from '../../entities/ChatHeader';
-import {ChatFooter} from "../../entities/ChatFooter";
+import { ChatFooter } from '../../entities/ChatFooter';
 
 export const ChatWindow = () => {
     return(

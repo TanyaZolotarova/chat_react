@@ -2,11 +2,11 @@ import { IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
 interface SendBtnProps {
-    onClick?: () => void;
+    onClick: () => void;
     disabled?: boolean;
 }
 
-export const SendIconBtn: React.FC<SendBtnProps> = ({ onClick, disabled }) => {
+export const SendBtn: React.FC<SendBtnProps> = ({ onClick, disabled }) => {
     return (
         <IconButton
             onClick={onClick}

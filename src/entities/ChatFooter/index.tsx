@@ -1,16 +1,19 @@
-import { useState } from 'react';
-import { Box, IconButton, Paper } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import { MessageTextInput } from '../../components/MessageInput';
-import { SendIconBtn } from '../../components/SendIconBtn';
+import { MessageInput } from '../../components/MessageInput';
+import { SendBtn } from '../../components/SendBtn';
+import { IconBtn } from '../../components/IconBtn';
 
 export const ChatFooter = () => {
-    const [text, setText] = useState('');
-
     const sendMessage = () => {
-        if (!text.trim()) return;
-        console.log('Sent:', text);
-        setText('');
+        const input = document.querySelector<HTMLInputElement>('input[placeholder="Message"]');
+        if (!input) return;
+
+        const value = input.value.trim();
+        if (!value) return;
+
+        console.log('Sent:', value);
+        input.value = '';
     };
 
     return (
@@ -27,17 +30,18 @@ export const ChatFooter = () => {
                     boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)',
                 }}
             >
-                <IconButton size='small' sx={{ color: '#868686' }}>
+                <IconBtn size='small' sx={{ color: '#868686' }}>
                     <EmojiEmotionsIcon />
-                </IconButton>
-                <MessageTextInput
-                    value={text}
-                    onChange={setText}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') sendMessage();
+                </IconBtn>
+                <MessageInput
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                        }
                     }}
                 />
-                <SendIconBtn onClick={sendMessage} disabled={!text.trim()} />
+                <SendBtn onClick={sendMessage}/>
             </Paper>
         </Box>
     );

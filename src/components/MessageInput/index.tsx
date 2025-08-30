@@ -1,18 +1,14 @@
 import { InputBase } from '@mui/material';
 
-interface MessageTextInputProps {
-    value: string;
-    onChange: (text: string) => void;
-    onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+interface MessageInputProps {
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-export const MessageTextInput: React.FC<MessageTextInputProps> = ({ value, onChange, onKeyPress }) => {
+export const MessageInput: React.FC<MessageInputProps> = ({ onKeyDown }) => {
     return (
         <InputBase
             placeholder='Message'
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyPress={onKeyPress}
+            onKeyDown={onKeyDown}
             sx={{
                 flex: 1,
                 mx: 1,
