@@ -30,9 +30,10 @@ interface ContactListOptions {
     onAddContact?: () => void;
     onDelete?: (id: number) => void;
     onArchive?: (id: number) => void;
+    onOpenChat?: (id: number) => void;
 }
 
-export const ContactList = ({ contactItems, placeholder, emptyText, searchText, onSearch, showSelection = true, onAddContact, onDelete, onArchive }: ContactListOptions) => {
+export const ContactList = ({ contactItems, placeholder, emptyText, searchText, onSearch, showSelection = true, onAddContact, onDelete, onArchive, onOpenChat }: ContactListOptions) => {
     const [selectedId, setSelectedId] = useState<number | null>(contactItems[0]?.id ?? null);
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [menuContactId, setMenuContactId] = useState<number | null>(null);
@@ -144,7 +145,10 @@ export const ContactList = ({ contactItems, placeholder, emptyText, searchText, 
                     >
                         <ListItemButton
                             selected={selectedId === item.id}
-                            onClick={() => showSelection && setSelectedId(item.id)}
+                            onClick={() => {
+                                if (showSelection) setSelectedId(item.id);
+                                onOpenChat?.(item.id);
+                            }}
                             sx={{
                                 borderRadius: 2,
                                 cursor: 'pointer',

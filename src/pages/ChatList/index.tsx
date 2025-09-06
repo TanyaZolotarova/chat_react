@@ -5,10 +5,14 @@ import { SideBar } from '../../features/SideBar';
 import { ProfileModal } from '../../features/ProfileModal';
 import { ChatListPanel } from '../../features/ChatListPanel';
 import { ChatWindow } from '../../features/ChatWindow';
+import { mockItems, Contact } from '../../components/Utils/mockData';
 
 export const ChatList = () => {
     const [searchParams] = useSearchParams();
     const [isProfileOpen , setIsProfileOpen ] = useState(false);
+    const [contacts, setContacts] = useState<Contact[]>(mockItems);
+    const [deletedIds, setDeletedIds] = useState<number[]>([]);
+
     const tab = searchParams.get('tab') || 'all';
 
     return(
@@ -23,14 +27,20 @@ export const ChatList = () => {
                 '&::-webkit-scrollbar': {
                     display: 'none',
                 }}}>
-                <ChatListPanel tab={tab}/>
+                <ChatListPanel
+                    tab={tab}
+                    contacts={contacts}
+                    setContacts={setContacts}
+                    deletedIds={deletedIds}
+                    setDeletedIds={setDeletedIds}
+                />
             </Box>
             <ProfileModal
                 isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}
             />
             <Box component='main' sx={{flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', height: '100vh'}}>
-                <ChatWindow/>
+                <ChatWindow contacts={contacts}/>
             </Box>
         </Box>
     )

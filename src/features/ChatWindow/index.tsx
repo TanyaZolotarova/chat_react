@@ -1,8 +1,20 @@
 import { Box } from '@mui/material';
 import { ChatHeader } from '../../entities/ChatHeader';
+import { useSearchParams } from 'react-router-dom';
 import { ChatFooter } from '../../entities/ChatFooter';
+import { Contact  } from '../../components/Utils/mockData';
 
-export const ChatWindow = () => {
+interface ChatWindowProps {
+    contacts: Contact[];
+}
+
+export const ChatWindow = ({ contacts }: ChatWindowProps) => {
+    const [searchParams] = useSearchParams();
+    const chatIdParam = searchParams.get('chatId');
+    const chatId = chatIdParam && !isNaN(Number(chatIdParam)) ? Number(chatIdParam) : null;
+
+    const contact = chatId ? contacts.find(contact => contact.id === chatId) : undefined;
+
     return(
             <Box
                 sx={{
@@ -14,10 +26,19 @@ export const ChatWindow = () => {
                     background: '#f7f7fb',
                 }}
             >
-                {/* TODO: delete mock data */}
-                <ChatHeader name='Sansa Stark' status='online' avatar='https://randomuser.me/api/portraits/women/3.jpg' />
-                <Box sx={{ flex: 1, overflowY: 'auto', background: '#f7f7fb' }}></Box>
-                <ChatFooter />
+                {contact ? (
+                    <>
+                        <ChatHeader
+                            name={contact.name}
+                            status={contact.isArchived ? 'Archived' : contact.status}
+                            avatar={contact.avatar}
+                        />
+                        <Box sx={{ flex: 1, overflowY: 'auto' }}></Box>
+                        <ChatFooter />
+                    </>
+                ) : (
+                    <Box sx={{ padding: 2, textAlign: 'center', color: 'gray' }}>Chat not found</Box>
+                )}
             </Box>
     )
 }
