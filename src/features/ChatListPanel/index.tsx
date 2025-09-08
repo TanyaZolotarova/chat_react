@@ -61,7 +61,7 @@ export const ChatListPanel = ({ tab, contacts, setContacts, deletedIds, setDelet
         const candidate = mockItems.find(
             contact =>
                 contact.name.toLowerCase().includes(lowerSearch) &&
-                !contacts.some(contact => contact.id === contact.id)
+                !contacts.some(existing => existing.id === contact.id)
         );
 
         if (candidate && isSearching) {
