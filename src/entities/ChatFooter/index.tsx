@@ -4,17 +4,13 @@ import { MessageInput } from '../../components/MessageInput';
 import { SendBtn } from '../../components/SendBtn';
 import { IconBtn } from '../../components/IconBtn';
 
-export const ChatFooter = () => {
-    const sendMessage = () => {
-        const input = document.querySelector<HTMLInputElement>('input[placeholder="Message"]');
-        if (!input) return;
+interface ChatFooterProps {
+    inputValue: string;
+    onChange: (value: string) => void;
+    onSendMessage: () => void;
+}
 
-        const value = input.value.trim();
-        if (!value) return;
-
-        console.log('Sent:', value);
-        input.value = '';
-    };
+export const ChatFooter = ({ onSendMessage, onChange, inputValue }:ChatFooterProps ) => {
 
     return (
         <Box sx={{ px: 2, py: 1, background: '#f7f7fb' }}>
@@ -34,14 +30,16 @@ export const ChatFooter = () => {
                     <EmojiEmotionsIcon />
                 </IconBtn>
                 <MessageInput
+                    value={inputValue}
+                    onChange={(e) => onChange(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
-                            sendMessage();
+                            onSendMessage();
                         }
                     }}
                 />
-                <SendBtn onClick={sendMessage}/>
+                <SendBtn onClick={onSendMessage} disabled={!inputValue.trim()}/>
             </Paper>
         </Box>
     );
