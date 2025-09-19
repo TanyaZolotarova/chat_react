@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Avatar, Badge, Box, Modal, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconBtn } from '../../components/IconBtn';
+import { IconBtn } from '../IconBtn';
 
 interface ChatHeaderProps {
     name: string;

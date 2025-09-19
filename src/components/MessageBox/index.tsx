@@ -1,18 +1,21 @@
 import { Avatar, Box, Typography } from '@mui/material';
-import { Contact, Message } from '../../components/Utils/mockData.ts';
+import { Message } from '../../features/ChatWindow';
+import { Contact } from '../Utils/mockData.ts';
 
 interface MessageBoxProps {
     message: Message;
     sender: Contact;
-    isOwn: boolean;
+    direction: 'row' | 'row-reverse';
+    color: string;
+
 }
 
-export const MessageBox: React.FC<MessageBoxProps> = ({ message, sender, isOwn }) => {
+export const MessageBox: React.FC<MessageBoxProps> = ({ message, sender, direction, color }) => {
     return(
         <Box
             sx={{
                 display: 'flex',
-                flexDirection: isOwn ? 'row-reverse' : 'row',
+                flexDirection: direction,
                 alignItems: 'flex-start',
                 gap: 1,
                 mb: 2,
@@ -23,7 +26,7 @@ export const MessageBox: React.FC<MessageBoxProps> = ({ message, sender, isOwn }
             <Box
                 sx={{
                     maxWidth: '70%',
-                    bgcolor: isOwn ? '#daf8cb' : '#fff',
+                    bgcolor: color,
                     px: 2,
                     py: 1,
                     borderRadius: 2,

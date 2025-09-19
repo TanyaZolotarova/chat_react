@@ -1,52 +1,55 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
-import { ChatHeader } from '../../entities/ChatHeader';
-import { ChatFooter } from '../../entities/ChatFooter';
-import { MessageBox } from '../../entities/MessageBox';
+import { ChatHeader } from '../../components/ChatHeader';
+import { ChatFooter } from '../../components/ChatFooter';
+import { MessageBox } from '../../components/MessageBox';
 import { selectUser } from '../../entities/user/userSlice.ts';
-import { generateEmailId } from '../../components/Utils';
-import { Contact, Message, mockMessages } from '../../components/Utils/mockData';
+import { Contact } from '../../components/Utils/mockData';
 
 interface ChatWindowProps {
     contacts: Contact[];
 }
 
+export interface Message {
+    id: number;
+    text: string;
+    senderId: string | number;
+    timestamp: string;
+}
+
 export const ChatWindow = ({ contacts }: ChatWindowProps) => {
     const [searchParams] = useSearchParams();
-    const [messages, setMessages] = useState<Message[]>(mockMessages);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
 
     const user = useSelector(selectUser);
-    const currentUserId = user.email ? generateEmailId(user.email) : 0;
+    const currentUserId = user.email ?? 0;
     const chatIdParam = searchParams.get('chatId');
     const chatId = chatIdParam && !isNaN(Number(chatIdParam)) && chatIdParam.trim() !== '' ? Number(chatIdParam) : null;
 
     const contact = chatId ? contacts.find(contact => contact.id === chatId) : undefined;
 
-    const messagesUsers = contact ? messages.filter(msg => {
-        const isForThisChat = msg.contactId === contact.id;
-        const isSentByCurrentOrContact = msg.senderId === currentUserId || msg.senderId === contact.id;
-        return isForThisChat && isSentByCurrentOrContact;
-    }) : [];
+    useEffect(() => {
+        setInputValue('');
+    }, [chatId]);
 
-    const SendMessage = () => {
+    const onMessageSend = () => {
         const text = inputValue.trim();
         if (!text.trim() || !contact){
             console.warn('Message is empty or contact not found');
             return;
         }
 
-        const newMessage: Message = {
+        const newMessage = {
             id: Date.now(),
             text,
-            contactId: contact.id,
             senderId: currentUserId,
             timestamp: new Date().toISOString(),
         };
 
-        setMessages(prev => [...prev, newMessage]);
+        setMessages((prev) => [...prev, newMessage]);
         setInputValue('');
     };
 
@@ -69,7 +72,7 @@ export const ChatWindow = ({ contacts }: ChatWindowProps) => {
                             avatar={contact.avatar}
                         />
                         <Box sx={{ flex: 1, overflowY: 'auto', px: 1, pt: 2 }}>
-                            {messagesUsers.map(msg => {
+                            {messages?.map(msg => {
                                 const sender = msg.senderId === currentUserId ? {
                                     id: currentUserId,
                                     name: user.name ?? 'You',
@@ -79,18 +82,20 @@ export const ChatWindow = ({ contacts }: ChatWindowProps) => {
 
                                 if (!sender) return null;
 
-                                const isOwn = msg.senderId === currentUserId;
+                                const direction = msg.senderId === currentUserId ? 'row-reverse' : 'row';
+                                const color = msg.senderId === currentUserId ? '#daf8cb' : '#fff';
                                 return (
                                     <MessageBox
                                         key={msg.id}
                                         message={msg}
                                         sender={sender}
-                                        isOwn={isOwn}
+                                        direction={direction}
+                                        color={color}
                                     />
                                 );
                             })}
                         </Box>
-                        <ChatFooter onSendMessage={SendMessage} inputValue={inputValue} onChange={setInputValue}/>
+                        <ChatFooter onSendMessage={onMessageSend} value={inputValue} onChange={(e) => setInputValue(e.target.value)} contact={contact}/>
                     </>
                 ) : (
                     <Box sx={{ padding: 2, textAlign: 'center', color: 'gray' }}>Chat not found</Box>
