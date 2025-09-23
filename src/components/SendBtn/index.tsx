@@ -2,15 +2,13 @@ import { IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 
 interface SendBtnProps {
-    onClick: () => void;
-    disabled?: boolean;
+    type: 'submit' | 'button';
 }
 
-export const SendBtn: React.FC<SendBtnProps> = ({ onClick, disabled }) => {
+export const SendBtn: React.FC<SendBtnProps> = ({ type }) => {
     return (
         <IconButton
-            onClick={onClick}
-            disabled={disabled}
+            type={type}
             size='small'
             sx={{
                 ml: 1,

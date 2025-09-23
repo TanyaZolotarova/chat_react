@@ -22,7 +22,6 @@ export interface Message {
 export const ChatWindow = ({ contacts }: ChatWindowProps) => {
     const [searchParams] = useSearchParams();
     const [messages, setMessages] = useState<Message[]>([]);
-    const [inputValue, setInputValue] = useState('');
 
     const user = useSelector(selectUser);
     const currentUserId = user.email ?? 0;
@@ -32,11 +31,11 @@ export const ChatWindow = ({ contacts }: ChatWindowProps) => {
     const contact = chatId ? contacts.find(contact => contact.id === chatId) : undefined;
 
     useEffect(() => {
-        setInputValue('');
+        setMessages([]);
     }, [chatId]);
 
-    const onMessageSend = () => {
-        const text = inputValue.trim();
+    const onMessageSend = (value:string) => {
+        const text = value.trim();
         if (!text.trim() || !contact){
             console.warn('Message is empty or contact not found');
             return;
@@ -50,7 +49,6 @@ export const ChatWindow = ({ contacts }: ChatWindowProps) => {
         };
 
         setMessages((prev) => [...prev, newMessage]);
-        setInputValue('');
     };
 
     return(
@@ -95,7 +93,7 @@ export const ChatWindow = ({ contacts }: ChatWindowProps) => {
                                 );
                             })}
                         </Box>
-                        <ChatFooter onSendMessage={onMessageSend} value={inputValue} onChange={(e) => setInputValue(e.target.value)} contact={contact}/>
+                        <ChatFooter onSendMessage={onMessageSend} contact={contact}/>
                     </>
                 ) : (
                     <Box sx={{ padding: 2, textAlign: 'center', color: 'gray' }}>Chat not found</Box>
