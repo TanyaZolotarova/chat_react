@@ -1,10 +1,15 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { ContactList } from '../../entities/ContactList';
 import { Contact, mockItems } from '../../components/Utils/mockData.ts';
 
 interface ChatListPanelProps {
     tab: string;
+    contacts: Contact[];
+    setContacts: React.Dispatch<React.SetStateAction<Contact[]>>;
+    deletedIds: number[];
+    setDeletedIds: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const tabConfig: Record<string, {
@@ -35,10 +40,10 @@ const tabConfig: Record<string, {
     },
 };
 
-export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
-    const [allContacts, setAllContacts] = useState<Contact[]>(mockItems);
+export const ChatListPanel = ({ tab, contacts, setContacts, deletedIds, setDeletedIds }: ChatListPanelProps) => {
     const [searchText, setSearchText] = useState('');
-    const [deletedIds, setDeletedIds] = useState<number[]>([]);
+
+    const navigate = useNavigate();
 
     const config = tabConfig[tab] ?? tabConfig['all'];
 
@@ -47,7 +52,7 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
         const isSearching = lowerSearch.length > 0;
 
         const baseFiltered = config.filter(
-            allContacts.filter(contact =>
+            contacts.filter(contact =>
                 contact.name.toLowerCase().includes(lowerSearch) &&
                 !deletedIds.includes(contact.id)
             )
@@ -56,7 +61,7 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
         const candidate = mockItems.find(
             contact =>
                 contact.name.toLowerCase().includes(lowerSearch) &&
-                !allContacts.some(ac => ac.id === contact.id)
+                !contacts.some(existing => existing.id === contact.id)
         );
 
         if (candidate && isSearching) {
@@ -64,26 +69,26 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
         }
 
         return baseFiltered;
-    }, [searchText, allContacts, config, deletedIds]);
+    }, [searchText, contacts, config, deletedIds]);
 
     const searchingText = (text: string) => {
         setSearchText(text);
     };
 
     const deleteContact = (id: number) => {
-        setAllContacts(prev => prev.filter(item => item.id !== id));
+        setContacts(prev => prev.filter(item => item.id !== id));
         setDeletedIds(prev => [...prev, id]);
     };
 
     const archiveContact = (id: number) => {
-        setAllContacts(prev =>
+        setContacts(prev =>
             prev.map(contact => contact.id === id ? { ...contact, isArchived: !contact.isArchived } : contact));
     };
 
     const addContact = () => {
         const pending = contactItemsForList.find((contact) => contact.isPendingAddition);
         if (pending) {
-            setAllContacts((prev) => [
+            setContacts((prev) => [
                 ...prev,
                 { ...pending, isPendingAddition: undefined },
             ]);
@@ -100,7 +105,6 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
                 background: '#f7f7fb',
                 marginLeft: '80px',
                 borderRight: '1px solid #e5e5ef',
-                boxShadow: '5px 5px 5px 0px rgba(0,0,0,0.3)',
                 boxSizing: 'border-box',
                 p: 0,
                 display: 'flex',
@@ -117,6 +121,7 @@ export const ChatListPanel = ({ tab }: ChatListPanelProps) => {
                 onAddContact={addContact}
                 onDelete={deleteContact}
                 onArchive={archiveContact}
+                onOpenChat={(id) => navigate(`/?tab=${tab}&chatId=${id}`)}
             />
         </Box>
     );

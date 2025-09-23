@@ -1,5 +1,5 @@
 export interface Contact {
-    id: number;
+    id: number | string;
     name: string;
     status: string;
     avatar: string;
